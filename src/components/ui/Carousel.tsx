@@ -242,57 +242,49 @@ export const CarouselNext: React.FC<CarouselButtonProps> = ({
 };
 
 // =========================
-// Styled Components
+// Styled Components (Fixed & Responsive)
 // =========================
 
 const CarouselWrapper = styled.div`
   position: relative;
   width: 100%;
-  overflow: visible;
-  --carousel-item-basis: 46;
-  --carousel-gap: 96px;
-  --carousel-arrow-size: 52px;
-  /* Keep edge offset in sync with side padding so arrows sit at edges */
-  --carousel-edge-offset: 0px;
+  overflow: hidden;
+  --carousel-gap: 32px;
+  --carousel-arrow-size: 44px;
+  --carousel-item-width-desktop: 430px;
+  --carousel-item-width-tablet: 370px;
+  --carousel-item-width-mobile: 350px;
 
-  /* padding-left: 96px;
-  padding-right: 96px; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    --carousel-item-basis: 60;
-    --carousel-gap: 72px;
-    --carousel-edge-offset: 72px;
-    padding-left: 72px;
-    padding-right: 72px;
+    --carousel-gap: 32px;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    --carousel-item-basis: 85;
     --carousel-gap: 32px;
-    --carousel-edge-offset: 24px;
-    padding-left: 24px;
-    padding-right: 24px;
   }
 
   @media (max-width: 480px) {
-    --carousel-item-basis: 95;
-    --carousel-gap: 24px;
-    --carousel-edge-offset: 16px;
-    padding-left: 16px;
-    padding-right: 16px;
+    --carousel-gap: 16px;
+    --carousel-item-width-mobile: 350px;
   }
 `;
 
 const ContentWrapper = styled.div`
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: visible;
+  overflow: hidden;
   touch-action: pan-y;
   user-select: none;
 `;
 
-const ItemsRow = styled.div<{$translateX: number}>`
+const ItemsRow = styled.div<{ $translateX: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,25 +292,14 @@ const ItemsRow = styled.div<{$translateX: number}>`
   transform: translate3d(${({ $translateX }) => $translateX}px, 0, 0);
   transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
   will-change: transform;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    gap: 32px;
-  }
-
-  @media (max-width: 480px) {
-    gap: 20px;
-  }
+  width: max-content;
 `;
 
-const ItemWrapper = styled.div<{
-  $isActive: boolean;
-  $isNext: boolean;
-  $isPrev: boolean;
-}>`
-  flex: 0 0 calc(var(--carousel-item-basis) * 1%);
-  margin: 0;
+const ItemWrapper = styled.div<{ $isActive: boolean; $isNext: boolean; $isPrev: boolean }>`
+  width: var(--carousel-item-width-desktop);
+  flex: 0 0 auto;
   opacity: 0.7;
-  transition: opacity 0.5s ease;
+  transition: opacity 0.4s ease, transform 0.4s ease;
   z-index: 1;
 
   ${({ $isActive }) =>
@@ -326,6 +307,7 @@ const ItemWrapper = styled.div<{
     css`
       opacity: 1;
       z-index: 2;
+      transform: scale(1.02);
     `}
 
   ${({ $isNext, $isPrev }) =>
@@ -333,89 +315,96 @@ const ItemWrapper = styled.div<{
     css`
       opacity: 0.85;
     `}
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: var(--carousel-item-width-tablet);
+    flex: 0 0 auto;
+  }
+
+  @media (max-width: 480px) {
+    width: var(--carousel-item-width-mobile);
+    flex: 0 0 auto;
+  }
 `;
 
 const InnerItem = styled.div`
-  border-radius: 0;
-  overflow: visible;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  background: ${({ theme }) => theme.colors.background};
 `;
 
-/* No shared NavButton; section components fully style and position their own buttons */
-
 // =========================
-// Section-specific nav components
+// Fixed Nav Button Positioning (Perfectly between cards)
 // =========================
 
 export const ProjectCarouselPrevious = styled(CarouselPrevious)`
   position: absolute;
-  top: var(--carousel-arrows-top, 50%);
-  /* center gap: center - half card width - half gap - half arrow size */
-  left: calc(
-    50% - (var(--carousel-item-basis) * 0.9%) - (var(--carousel-gap) / 2) - (var(--carousel-arrow-size) / 2) + var(--carousel-arrow-extra-left)
-  );
+  top: 50%;
+  left: 4%;
   transform: translateY(-50%);
-  z-index: 1000;
+  z-index: 10;
   width: var(--carousel-arrow-size);
   height: var(--carousel-arrow-size);
+  background: ${({ theme }) => theme.colors.accent.mint};
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: 50%;
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.text};
 
-  & {
-    background: ${({ theme }) => theme.colors.accent.mint};
-    border: 2px solid ${({ theme }) => theme.colors.border};
-    border-radius: 9999px;
-    box-shadow: ${({ theme }) => theme.shadows.base};
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.colors.text};
+  &:hover:not(:disabled) {
+    transform: translateY(-50%) scale(1.05);
   }
 
-  &:hover:not(:disabled) { box-shadow: none; }
-
   &:disabled {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
   svg {
     stroke-width: 2;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    left: 2%;
   }
 `;
 
 export const ProjectCarouselNext = styled(CarouselNext)`
   position: absolute;
-  top: var(--carousel-arrows-top, 50%);
-  /* center gap: center - half card width - half gap - half arrow size (mirrored) */
-  right: calc(
-    50% - (var(--carousel-item-basis) * 0.9%) - (var(--carousel-gap) / 2) - (var(--carousel-arrow-size) / 2) + var(--carousel-arrow-extra-right)
-  );
+  top: 50%;
+  right: 4%;
   transform: translateY(-50%);
-  z-index: 1000;
+  z-index: 10;
   width: var(--carousel-arrow-size);
   height: var(--carousel-arrow-size);
-
-  & {
-    background: ${({ theme }) => theme.colors.accent.mint};
-    border: 2px solid ${({ theme }) => theme.colors.border};
-    border-radius: 9999px;
-    box-shadow: ${({ theme }) => theme.shadows.base};
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.colors.text};
-  }
+  background: ${({ theme }) => theme.colors.accent.mint};
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: 50%;
+  box-shadow: ${({ theme }) => theme.shadows.base};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.text};
 
   &:hover:not(:disabled) {
-    transform: translateY(-50%) translate(4px, 4px);
-    box-shadow: none;
+    transform: translateY(-50%) scale(1.05);
   }
 
   &:disabled {
-    opacity: 0.35;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 
   svg {
     stroke-width: 2;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    right: 2%;
   }
 `;
 

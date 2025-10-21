@@ -375,6 +375,7 @@ const SkillTile = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.md};
+  
   user-select: none;
 `;
 
@@ -388,7 +389,6 @@ const TileBox = styled.div`
   place-items: center;
   box-shadow: 6px 6px 0 #000;
   transition: all 0.3s ease;
-
   img, svg { 
     width: 70px; 
     height: 70px;
@@ -404,6 +404,7 @@ const TileBox = styled.div`
     height: 90px;
     border-width: 3px;
     box-shadow: 5px 5px 0 #000;
+   
     
     img, svg { 
       width: 50px; 
@@ -431,6 +432,7 @@ const PMGrid = styled(AllSkillsGrid)`
     .skill-label {
       display: inline-block;
     }
+    gap : 5rem ;
   }
 `;
 
@@ -438,22 +440,7 @@ const PMGrid = styled(AllSkillsGrid)`
 const getSkillIcon = (name: string) => {
   const n = name.toLowerCase();
 
-  if (n.includes("quart")) {
-    return (
-      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="qg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#c6d6f0"/>
-            <stop offset="100%" stopColor="#1d0f60"/>
-          </linearGradient>
-        </defs>
-        <rect x="3" y="3" width="18" height="18" rx="4" fill="url(#qg)"/>
-        <path d="M10 5h4v2l2.5 2.5" stroke="#fff" strokeWidth="1.4" strokeLinecap="round"/>
-        <circle cx="10" cy="12.5" r="3.8" fill="none" stroke="#fff" strokeWidth="1.6"/>
-        <path d="M16 9.5l3 3" stroke="#0c0633" strokeOpacity=".5" strokeWidth="2"/>
-      </svg>
-    );
-  }
+  
 
   if (n.includes("gsap")) {
     return (

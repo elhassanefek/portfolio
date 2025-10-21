@@ -35,7 +35,7 @@ export const Header: React.FC = () => {
     <HeaderWrapper $isScrolled={isScrolled}>
       <Container>
         <HeaderContent>
-          <Logo>PORTFOLIO</Logo>
+          <Logo>Fekairi Elhassane</Logo>
 
           <DesktopNav>
             {navItems.map((item) => (

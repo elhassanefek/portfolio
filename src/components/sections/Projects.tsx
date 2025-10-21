@@ -337,6 +337,7 @@ const SectionDescription = styled.p`
 const CarouselWrapper = styled.div`
   position: relative;
   max-width: 1200px;
+  overflow: hidden;
   margin: 0 auto;
   padding: ${({ theme }) => theme.spacing["2xl"]} ${({ theme }) => theme.spacing["4xl"]};
   overflow: visible;
@@ -351,6 +352,8 @@ const CarouselWrapper = styled.div`
 const StyledCarousel = styled(Carousel)`
   position: relative;
   width: 100%;
+ 
+
   --carousel-item-basis: 32;
   --carousel-gap: 72px;
   --carousel-arrows-top: 58%;

@@ -431,6 +431,9 @@ const HeaderCard = styled.section<{ $color: string }>`
   margin-bottom: ${({ theme }) => theme.spacing["3xl"]};
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  overflow: hidden;
+  word-wrap: break-word;
+  hyphens: auto;
 
   &:hover {
     transform: translate(-4px, -4px);
@@ -494,6 +497,9 @@ const BadgeText = styled.span`
 const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
 `;
 
 const Heading = styled.h1`
@@ -504,6 +510,10 @@ const Heading = styled.h1`
   text-transform: uppercase;
   letter-spacing: -0.02em;
   color: #000;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
   
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     font-size: ${({ theme }) => theme.fontSizes["5xl"]};
@@ -532,6 +542,10 @@ const Desc = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: 500;
   margin-bottom: ${({ theme }) => theme.spacing.lg};
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes.base};
@@ -587,6 +601,9 @@ const Section = styled.section`
   border-radius: 0;
   margin-bottom: ${({ theme }) => theme.spacing["2xl"]};
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  word-wrap: break-word;
+  hyphens: auto;
   
   &:hover {
     transform: translate(-3px, -3px);
@@ -659,6 +676,11 @@ const Body = styled.p`
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
   font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: 500;
+  white-space: pre-line;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes.base};

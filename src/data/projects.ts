@@ -36,43 +36,38 @@ export const projects: Project[] = [
       "Modular service–repository architecture for maintainability.",
       "Event-driven updates and efficient database queries.",
     ],
-    gallery: [
-      
-    ],
+    gallery: [],
     tags: ["Node.js", "Express", "MongoDB", "Socket.IO", "JWT"],
     color: "#E5F4F3",
     image: "/illustrations/projectify.png",
     github: "https://github.com/elhassane-fekairi/project-management-api",
   },
   {
-  id: "2",
-  title: "Real-time Sentiment Analysis System",
-  description:
-    "An interactive sentiment analysis dashboard for social and manual text input, powered by RoBERTa and Hugging Face models. Built with Flask and React (TypeScript), featuring live analytics and streaming-ready architecture.",
-  story:
-    "This project came from my fascination with Natural Language Processing and real-time emotion tracking. I wanted to build something that could interpret and visualize emotions as they happen — not afterward. With Flask powering the backend and both RoBERTa and Hugging Face models handling sentiment inference, I developed a streaming-ready dashboard capable of analyzing live and manual text input in real time. React and TypeScript brought it all together with an interactive, data-driven interface. It became the perfect intersection of NLP, visualization, and full-stack engineering.",
-  challenges: [
-    "Integrating multiple NLP models (RoBERTa and Hugging Face transformers) for consistent predictions.",
-    "Handling real-time data streams efficiently with Flask and async endpoints.",
-    "Optimizing inference latency while maintaining model accuracy.",
-    "Designing dynamic frontend charts that update seamlessly as new data arrives.",
-  ],
-  features: [
-    "Dual-model sentiment analysis using RoBERTa and Hugging Face pipelines.",
-    "Flask-based backend with asynchronous endpoints for live updates.",
-    "Interactive dashboard visualizing positive, negative, and neutral sentiment trends.",
-    "Real-time text analysis for both manual input and social media data streams.",
-    "TypeScript-based React frontend with reusable data visualization components.",
-  ],
-  gallery: [
-   
-  ],
-  tags: ["React", "TypeScript", "Flask", "RoBERTa", "Hugging Face", "NLP", "Streaming"],
-  color: "#FFE5E5",
-  image: "/illustrations/sentiment.png",
-  github: "https://github.com/elhassane-fekairi/sentiment-dashboard",
-}
-,
+    id: "2",
+    title: "Real-time Sentiment Analysis System",
+    description:
+      "An interactive sentiment analysis dashboard for social and manual text input, powered by RoBERTa and Hugging Face models. Built with Flask and React (TypeScript), featuring live analytics and streaming-ready architecture.",
+    story:
+      "This project came from my fascination with Natural Language Processing and real-time emotion tracking. I wanted to build something that could interpret and visualize emotions as they happen — not afterward. With Flask powering the backend and both RoBERTa and Hugging Face models handling sentiment inference, I developed a streaming-ready dashboard capable of analyzing live and manual text input in real time. React and TypeScript brought it all together with an interactive, data-driven interface. It became the perfect intersection of NLP, visualization, and full-stack engineering.",
+    challenges: [
+      "Integrating multiple NLP models (RoBERTa and Hugging Face transformers) for consistent predictions.",
+      "Handling real-time data streams efficiently with Flask and async endpoints.",
+      "Optimizing inference latency while maintaining model accuracy.",
+      "Designing dynamic frontend charts that update seamlessly as new data arrives.",
+    ],
+    features: [
+      "Dual-model sentiment analysis using RoBERTa and Hugging Face pipelines.",
+      "Flask-based backend with asynchronous endpoints for live updates.",
+      "Interactive dashboard visualizing positive, negative, and neutral sentiment trends.",
+      "Real-time text analysis for both manual input and social media data streams.",
+      "TypeScript-based React frontend with reusable data visualization components.",
+    ],
+    gallery: [],
+    tags: ["React", "TypeScript", "Flask", "RoBERTa", "Hugging Face", "NLP", "Streaming"],
+    color: "#FFE5E5",
+    image: "/illustrations/sentiment.png",
+    github: "https://github.com/elhassane-fekairi/sentiment-dashboard",
+  },
   {
     id: "3",
     title: "E-Commerce Platform",
@@ -97,11 +92,9 @@ export const projects: Project[] = [
       "/illustrations/ecommerce1.png",
       "/illustrations/ecommerce2.png",
       "/illustrations/ecommerce3.png",
-
     ],
     tags: ["React", "Node.js", "MongoDB", "Context API", "React Query"],
     image: "/illustrations/ecommerce.png",
-
     color: "#FFE8DB",
     github: "https://github.com/elhassanefek/multi-role-ecommerce-platform",
   },
@@ -125,13 +118,89 @@ export const projects: Project[] = [
       "Custom UI for step-by-step CPU operation visualization.",
       "Optimized performance for smooth playback and transitions.",
     ],
-    gallery: [
-      "/illustrations/calm1.png",
-     
-    ],
+    gallery: ["/illustrations/calm1.png"],
     tags: ["React", "GSAP", "JavaScript", "Animation", "E-Learning"],
     image: "/illustrations/calm.png",
     color: "#E8E5FF",
     github: "https://github.com/ounnane-abdelhak/calm-15",
+  },
+   {
+     id: "5",
+     title: "Green Spaces Management Application",
+     description:
+       "A web platform that helps communities manage and monitor urban green spaces by tracking planting areas, trash cans, and other urban infrastructure through an interactive map.",
+     story:
+       "This project was inspired by the growing need to manage urban green spaces efficiently. I aimed to create a tool that empowers local authorities and communities to track and improve the condition of parks, planting zones, and public spaces. Using React and Leaflet.js, I built an intuitive mapping interface that allows users to view, categorize, and edit various urban locations in real time, supported by a secure authentication system.",
+     challenges: [
+       "Integrating Leaflet.js for interactive map management.",
+       "Implementing location CRUD operations with React state management.",
+       "Ensuring a smooth and responsive map interaction experience.",
+       "Designing a simple but effective authentication system.",
+     ],
+     features: [
+       "Interactive map with categorized markers for locations.",
+       "Add, edit, and delete location points in real time.",
+       "User authentication for protected routes and features.",
+       "Responsive, accessible design for mobile and desktop.",
+       "Geolocation support for finding and marking user positions.",
+     ],
+     gallery: [],
+     tags: ["React", "Leaflet.js", "Context API", "Vite", "CSS Modules"],
+     color: "#E9F7EF",
+     image: "/illustrations/planting.png",
+     github: "https://github.com/elhassane-fekairi/green-spaces-management",
+   },
+   {
+     id: "6",
+     title: "Fast Pizza",
+     description:
+       "A responsive pizza ordering web app that allows users to browse an online menu, add pizzas to a shopping cart, and place orders through an interactive checkout form.",
+     story:
+       "This project was built to explore building smooth, modern user experiences with React while practicing state management and form handling. I wanted to recreate a realistic food ordering flow — from viewing an online menu to adding pizzas to the cart and submitting an order. The result is a clean, fast, and responsive single-page app that mimics a real online pizzeria ordering experience.",
+     challenges: [
+       "Designing a dynamic shopping cart system with React state management.",
+       "Building a form-based ordering flow with validation and responsive UI.",
+       "Maintaining cart persistence between routes using Context API.",
+       "Ensuring a seamless experience across all device sizes.",
+     ],
+     features: [
+       "Online pizza menu with detailed product cards.",
+       "Add-to-cart and remove-from-cart functionality with live total updates.",
+       "Interactive checkout form for placing orders.",
+       "Responsive design optimized for mobile and desktop users.",
+       "Clean component structure using React Router and Context API.",
+     ],
+     gallery: [],
+     tags: ["React", "Context API", "React Router", "Tailwind CSS", "Vite"],
+     color: "#FFF4E0",
+     image: "/illustrations/pizza.png",
+     github: "https://github.com/elhassane-fekairi/fast-pizza",
+   },
+   {
+     id: "7",
+     title: "Personal Portfolio Website",
+     description:
+       "A modern, animated, and fully responsive portfolio website designed to showcase my projects, skills, and background as a developer passionate about backend systems, AI, and frontend design.",
+     story:
+       "This project was built to represent who I am as a developer — combining clean design, fluid animations, and technical depth. I focused on making it both visually appealing and functionally solid. Using React and styled-components, I created a modular architecture with reusable components, smooth scroll-based navigation, and subtle motion effects powered by Framer Motion. The portfolio also highlights my most meaningful projects and includes interactive links for visitors to explore my work.",
+     challenges: [
+       "Designing a portfolio that balances aesthetics and performance.",
+       "Implementing smooth animations using Framer Motion without layout shifts.",
+       "Building reusable and well-structured UI components.",
+       "Ensuring accessibility and responsiveness across all devices.",
+     ],
+     features: [
+       "Dynamic project showcase with detailed descriptions and external links.",
+       "Framer Motion animations for smooth transitions and section reveals.",
+       "Scroll-based navigation and interactive menu highlighting active sections.",
+       "Responsive design optimized for all screen sizes.",
+       "Styled-components for maintainable and theme-friendly design.",
+     ],
+     gallery: [],
+     tags: ["React", "TypeScript", "Styled-Components", "Framer Motion", "Vite"],
+     color: "#E3F2FD",
+     image: "/illustrations/portfolio.png",
+     github: "https://github.com/elhassane-fekairi/portfolio",
+     link: "https://fekairielhassane.vercel.app",
   },
 ];

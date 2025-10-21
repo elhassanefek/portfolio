@@ -152,9 +152,15 @@ const ContactSection = styled.section`
   background-color: #AEC6FF;
   position: relative;
   overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     padding: ${({ theme }) => theme.spacing["3xl"]} 0;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: ${({ theme }) => theme.spacing["2xl"]} 0;
   }
 `;
 
@@ -274,23 +280,38 @@ const SectionTitle = styled.h2`
   border-radius: 0;
   animation: ${fadeInUp} 0.8s ease-out;
   transition: all 0.3s ease;
+  text-align: center;
+  width: auto;
+  max-width: 100%;
+  box-sizing: border-box;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
   
   &:hover {
     transform: translate(-3px, -3px);
     box-shadow: 11px 11px 0 #000;
   }
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
     border-width: 4px;
     box-shadow: 6px 6px 0 #000;
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["2xl"]};
     border-width: 3px;
     box-shadow: 4px 4px 0 #000;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    letter-spacing: 0.5px;
   }
 `;
 
@@ -308,10 +329,21 @@ const ContentWrapper = styled.div`
   gap: ${({ theme }) => theme.spacing["3xl"]};
   position: relative;
   z-index: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 ${({ theme }) => theme.spacing.lg};
+  box-sizing: border-box;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.spacing["2xl"]};
+    gap: ${({ theme }) => theme.spacing.xl};
+    padding: 0 ${({ theme }) => theme.spacing.md};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 0 ${({ theme }) => theme.spacing.sm};
+    gap: ${({ theme }) => theme.spacing.lg};
   }
 `;
 
@@ -329,19 +361,22 @@ const InfoCard = styled.div`
   padding: ${({ theme }) => theme.spacing["2xl"]};
   box-shadow: 10px 10px 0 #000;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     transform: translate(-3px, -3px);
     box-shadow: 13px 13px 0 #000;
   }
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     padding: ${({ theme }) => theme.spacing.xl};
     border-width: 4px;
     box-shadow: 7px 7px 0 #000;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: ${({ theme }) => theme.spacing.lg};
     border-width: 3px;
     box-shadow: 5px 5px 0 #000;
   }
@@ -384,16 +419,24 @@ const ContactItem = styled.div`
   padding: ${({ theme }) => theme.spacing.lg};
   box-shadow: 6px 6px 0 #000;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     transform: translate(-2px, -2px);
     box-shadow: 8px 8px 0 #000;
   }
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     padding: ${({ theme }) => theme.spacing.md};
     border-width: 3px;
     box-shadow: 5px 5px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+    border-width: 2px;
+    box-shadow: 3px 3px 0 #000;
   }
 `;
 
@@ -443,10 +486,23 @@ const SocialLink = styled.a`
   letter-spacing: 0.5px;
   box-shadow: 3px 3px 0 #000;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  text-align: center;
+  flex: 1 0 auto;
+  min-width: 80px;
+  box-sizing: border-box;
 
   &:hover {
     transform: translate(-2px, -2px);
     box-shadow: 5px 5px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.xs};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+    border-width: 2px;
+    min-width: 70px;
+    box-shadow: 2px 2px 0 #000;
   }
 `;
 
@@ -464,6 +520,9 @@ const ContactForm = styled.form`
   border: 5px solid #000;
   box-shadow: 10px 10px 0 #000;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  margin-right : -2rem ;
 
   &:hover {
     transform: translate(-3px, -3px);
@@ -477,8 +536,10 @@ const ContactForm = styled.form`
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: ${({ theme }) => theme.spacing.lg};
     border-width: 3px;
     box-shadow: 5px 5px 0 #000;
+    gap: ${({ theme }) => theme.spacing.md};
   }
 `;
 
@@ -489,10 +550,6 @@ const FormTitle = styled.h3`
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes.lg};
-  }
 `;
 
 const FormGroup = styled.div`
@@ -519,6 +576,11 @@ const Input = styled.input`
   font-weight: 500;
   box-shadow: 4px 4px 0 #000;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
   &:focus {
     outline: none;
@@ -529,6 +591,14 @@ const Input = styled.input`
 
   &::placeholder {
     color: #666;
+    opacity: 1;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+    border-width: 2px;
+    box-shadow: 3px 3px 0 #000;
   }
 `;
 
@@ -544,6 +614,12 @@ const TextArea = styled.textarea`
   font-family: inherit;
   box-shadow: 4px 4px 0 #000;
   transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 150px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 
   &:focus {
     outline: none;
@@ -554,5 +630,14 @@ const TextArea = styled.textarea`
 
   &::placeholder {
     color: #666;
+    opacity: 1;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+    border-width: 2px;
+    box-shadow: 3px 3px 0 #000;
+    min-height: 120px;
   }
 `;

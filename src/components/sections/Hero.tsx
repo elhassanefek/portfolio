@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { Container } from "../common/Container";
 import { Button } from "../common/Button";
 import { fadeInUp, fadeIn } from "../../styles/animations";
 
@@ -21,7 +20,7 @@ export const Hero: React.FC = () => {
         <Shape4 />
       </DecorativeShapes>
       
-      <Container>
+      <HeroContainer>
         <HeroContent>
          <TextContent>
   <Greeting>👋 Hey there, I'm</Greeting>
@@ -58,7 +57,7 @@ export const Hero: React.FC = () => {
            
           </IllustrationWrapper>
         </HeroContent>
-      </Container>
+      </HeroContainer>
     </HeroSection>
   );
 };
@@ -66,8 +65,13 @@ export const Hero: React.FC = () => {
 const HeroSection = styled.section`
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: center;
+  text-align: center;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    text-align: left;
+  }
   position: relative;
   padding: ${({ theme }) => theme.spacing["4xl"]} 0;
   padding-top: calc(${({ theme }) => theme.spacing["4xl"]} + 80px);
@@ -75,8 +79,9 @@ const HeroSection = styled.section`
   background: #F5F5F5;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding: ${({ theme }) => theme.spacing["3xl"]} 0;
-    padding-top: calc(${({ theme }) => theme.spacing["3xl"]} + 80px);
+    padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.md}`};
+    padding-top: calc(${({ theme }) => theme.spacing["3xl"]} + 60px);
+    overflow-x: hidden;
   }
 `;
 
@@ -194,10 +199,29 @@ const Shape4 = styled.div`
   }
 `;
 
+const HeroContainer = styled.div`
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 ${({ theme }) => theme.spacing.md};
+  box-sizing: border-box;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    max-width: 1200px;
+    padding: 0 ${({ theme }) => theme.spacing.xl};
+  }
+`;
+
 const HeroContent = styled.div`
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: ${({ theme }) => theme.spacing["3xl"]};
+  grid-template-columns: 1fr;
+  gap: ${({ theme }) => theme.spacing.lg};
+  overflow: hidden;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    grid-template-columns: 1.2fr 1fr;
+    gap: ${({ theme }) => theme.spacing["3xl"]};
+  }
   align-items: center;
   background: #fff;
   border: 5px solid #000;
@@ -234,6 +258,21 @@ const HeroContent = styled.div`
 `;
 
 const TextContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  overflow: hidden;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    text-align: left;
+  }
   animation: ${fadeInUp} 0.8s ease-out;
 `;
 
@@ -259,10 +298,29 @@ const Greeting = styled.p`
 `;
 
 const Title = styled.h1`
-  font-size: ${({ theme }) => theme.fontSizes["7xl"]};
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  line-height: 1.1;
+  font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
+  line-height: 1.2;
   font-family: ${({ theme }) => theme.fonts.headingSerif};
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes["5xl"]};
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    font-size: ${({ theme }) => theme.fontSizes["6xl"]};
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.xl}) {
+    font-size: ${({ theme }) => theme.fontSizes["7xl"]};
+  }
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
@@ -294,11 +352,30 @@ const Subtitle = styled.h2`
 `;
 
 const Description = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  line-height: ${({ theme }) => theme.lineHeights.relaxed};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  line-height: 1.6;
   color: #000;
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
-  max-width: 600px;
+  margin: 0 auto ${({ theme }) => theme.spacing.lg} auto;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  text-align: center;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.base};
+    padding: 0;
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes.lg};
+    max-width: 90%;
+    text-align: left;
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    max-width: 600px;
+  }
   font-weight: 500;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
@@ -309,18 +386,41 @@ const Description = styled.p`
 
 const ButtonGroup = styled.div`
   display: flex;
+  flex-direction: column;
   gap: ${({ theme }) => theme.spacing.md};
-  flex-wrap: wrap;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
+  margin: ${({ theme }) => theme.spacing.xl} auto 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    flex-direction: row;
     justify-content: center;
+    flex-wrap: wrap;
+    gap: ${({ theme }) => theme.spacing.md};
   }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    flex-direction: column;
-
-    button {
-      width: 100%;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  
+  & > * {
+    flex: 1 1 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    
+    @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+      flex: 1 1 calc(50% - ${({ theme }) => theme.spacing.md});
+      min-width: 0;
+    }
+    
+    @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+      flex: 0 1 auto;
+      min-width: 200px;
     }
   }
 `;
@@ -328,17 +428,30 @@ const ButtonGroup = styled.div`
 const PrimaryButton = styled(Button)`
   background-color: #FF6B9D;
   color: #000;
-  border: 4px solid #000;
+  border: 3px solid #000;
   border-radius: 0;
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
   font-weight: 900;
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   letter-spacing: 0.5px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
   box-shadow: 5px 5px 0 #000;
   text-transform: uppercase;
   cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1.2;
+  min-height: 44px;
+  position: relative;
+  z-index: 1;
 
   &:hover:not(:disabled) {
     background-color: #FFB5E8;
@@ -347,30 +460,55 @@ const PrimaryButton = styled(Button)`
   }
 
   &:active:not(:disabled) {
-    transform: translate(2px, 2px);
+    transform: translate(1px, 1px);
     box-shadow: 3px 3px 0 #000;
   }
   
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.base};
+    padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.xl}`};
+    min-height: 48px;
+  }
+  
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    border-width: 3px;
-    box-shadow: 4px 4px 0 #000;
+    font-size: ${({ theme }) => theme.fontSizes.xs};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+    min-height: 40px;
+    box-shadow: 3px 3px 0 #000;
+    
+    &:hover:not(:disabled) {
+      box-shadow: 5px 5px 0 #000;
+    }
   }
 `;
 
 const SecondaryButton = styled(Button)`
   background-color: #B4E7CE;
   color: #000;
-  border: 4px solid #000;
+  border: 3px solid #000;
   border-radius: 0;
-  padding: ${({ theme }) => `${theme.spacing.md} ${theme.spacing.xl}`};
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
   font-weight: 900;
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   letter-spacing: 0.5px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.15s ease;
   box-shadow: 5px 5px 0 #000;
   text-transform: uppercase;
   cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSizes.base};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  line-height: 1.2;
+  min-height: 44px;
+  position: relative;
+  z-index: 1;
 
   &:hover:not(:disabled) {
     background-color: #AEC6FF;
@@ -379,13 +517,25 @@ const SecondaryButton = styled(Button)`
   }
 
   &:active:not(:disabled) {
-    transform: translate(2px, 2px);
+    transform: translate(1px, 1px);
     box-shadow: 3px 3px 0 #000;
   }
   
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.base};
+    padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.xl}`};
+    min-height: 48px;
+  }
+  
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    border-width: 3px;
-    box-shadow: 4px 4px 0 #000;
+    font-size: ${({ theme }) => theme.fontSizes.xs};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
+    min-height: 40px;
+    box-shadow: 3px 3px 0 #000;
+    
+    &:hover:not(:disabled) {
+      box-shadow: 5px 5px 0 #000;
+    }
   }
 `;
 
