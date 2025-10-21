@@ -36,7 +36,7 @@ export const projects: Project[] = [
       "Modular service–repository architecture for maintainability.",
       "Event-driven updates and efficient database queries.",
     ],
-    gallery: [],
+    gallery: ["/illustrations/projectify2.png"],
     tags: ["Node.js", "Express", "MongoDB", "Socket.IO", "JWT"],
     color: "#E5F4F3",
     image: "/illustrations/projectify.png",
@@ -62,10 +62,10 @@ export const projects: Project[] = [
       "Real-time text analysis for both manual input and social media data streams.",
       "TypeScript-based React frontend with reusable data visualization components.",
     ],
-    gallery: [],
+    gallery: [ ],
     tags: ["React", "TypeScript", "Flask", "RoBERTa", "Hugging Face", "NLP", "Streaming"],
     color: "#FFE5E5",
-    image: "/illustrations/sentiment.png",
+    image: "/illustrations/sentiment3.png",
     github: "https://github.com/elhassane-fekairi/sentiment-dashboard",
   },
   {
@@ -118,7 +118,7 @@ export const projects: Project[] = [
       "Custom UI for step-by-step CPU operation visualization.",
       "Optimized performance for smooth playback and transitions.",
     ],
-    gallery: ["/illustrations/calm1.png"],
+    gallery: ["/illustrations/calm1.png" , "/illustrations/calm.png" , "/illustrations/calm3.png"],
     tags: ["React", "GSAP", "JavaScript", "Animation", "E-Learning"],
     image: "/illustrations/calm.png",
     color: "#E8E5FF",
@@ -144,7 +144,7 @@ export const projects: Project[] = [
        "Responsive, accessible design for mobile and desktop.",
        "Geolocation support for finding and marking user positions.",
      ],
-     gallery: [],
+     gallery: ["/illustrations/planting.png" , "/illustrations/planting2.png"],
      tags: ["React", "Leaflet.js", "Context API", "Vite", "CSS Modules"],
      color: "#E9F7EF",
      image: "/illustrations/planting.png",
@@ -170,7 +170,7 @@ export const projects: Project[] = [
        "Responsive design optimized for mobile and desktop users.",
        "Clean component structure using React Router and Context API.",
      ],
-     gallery: [],
+     gallery: ["/illustrations/pizza.png" ,"/illustrations/pizza2.png"],
      tags: ["React", "Context API", "React Router", "Tailwind CSS", "Vite"],
      color: "#FFF4E0",
      image: "/illustrations/pizza.png",
@@ -203,4 +203,33 @@ export const projects: Project[] = [
      github: "https://github.com/elhassane-fekairi/portfolio",
      link: "https://fekairielhassane.vercel.app",
   },
+  {
+  id: "8",
+  title: "WildOasis – Cabin Booking Platform",
+  description:
+    "A full-stack web application built with Next.js that allows users to browse and book cabins while providing administrators with a dashboard to manage bookings, cabins, and users efficiently.",
+  story:
+    "WildOasis was developed as part of Jonas Schmedtmann's Ultimate React Course. The project focuses on creating a polished, real-world application that handles both customer-facing booking experiences and admin operations. I implemented authentication with NextAuth.js, integrated Supabase for backend database management, and added Stripe for secure payments. Tailwind CSS ensured responsive design across devices, and the app features dynamic cabin listings and real-time booking updates.",
+  challenges: [
+    "Implementing secure authentication with NextAuth.js and Google sign-in.",
+    "Managing real-time booking data with Supabase and ensuring data consistency.",
+    "Integrating Stripe payments for smooth and secure transactions.",
+    "Building a fully responsive design with Tailwind CSS for both customer and admin interfaces.",
+    "Structuring a full-stack Next.js application with clean architecture."
+  ],
+  features: [
+    "Customer-facing cabin search and booking system.",
+    "Admin dashboard to manage cabins, bookings, and user accounts.",
+    "Secure authentication using NextAuth.js with Google sign-in.",
+    "Stripe payment integration for seamless transactions.",
+    "Responsive design with Tailwind CSS for all devices."
+  ],
+  gallery: ["/illustrations/holteli1.png" ,  "/illustrations/hoteli2.png" , "/illustrations/hoteli4.png"],
+  tags: ["Next.js", "React", "Tailwind CSS", "Supabase", "Stripe", "NextAuth.js"],
+  color: "#DFF6FF",
+  image: "/illustrations/hoteli.png",
+  github: "https://github.com/Ahmedabdelaziz77/the-wild-oasis-website",
+  link: "https://the-wild-oasis-website.vercel.app",
+}
+
 ];

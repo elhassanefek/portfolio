@@ -96,6 +96,7 @@ function getLogoUrl(name: string): string | undefined {
     react: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg",
     typescript: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg",
     "javascript (es6+)": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+    nextjs: "'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nextjs/nextjs-original-wordmark.svg",  
     html5: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
     html: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
     css3: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
@@ -111,6 +112,8 @@ function getLogoUrl(name: string): string | undefined {
 
     // Backend
     node: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    supabase: "https://cdn.simpleicons.org/supabase", 
+
     "node.js": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
     express: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/express/express-original.svg",
     fastapi: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/fastapi/fastapi-original.svg",

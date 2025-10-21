@@ -1,10 +1,12 @@
-// src/components/sections/Contact.tsx
+
 
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Container } from "../common/Container";
 import { Button } from "../common/Button";
 import { fadeInUp } from "../../styles/animations";
+import emailjs from "@emailjs/browser"
+
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -22,11 +24,31 @@ export const Contact: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+
+   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Add your form submission logic here
-    console.log("Form submitted:", formData);
+
+    try {
+      const result = await emailjs.send(
+        "service_raxw8wa",    // replace with your EmailJS service ID
+        "template_t4sc0sq",   // replace with your EmailJS template ID
+        {
+    name: formData.name,
+    email: formData.email,
+    message: formData.message,
+  }   ,         // data to send
+        "ehu0ZYhHwsDyrv7W4"     // replace with your EmailJS public key
+      );
+
+      console.log("Message sent:", result.text);
+      alert("Message sent successfully!");
+      setFormData({ name: "", email: "", message: "" }); // reset form
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("Failed to send message. Please try again.");
+    }
   };
+ 
 
   return (
     <ContactSection id="contact">
@@ -57,37 +79,31 @@ export const Contact: React.FC = () => {
               <ContactItem>
                 <ContactLabel>📧 Email</ContactLabel>
                 <ContactLink href="mailto:your.email@example.com">
-                  your.email@example.com
+                  ne_fekairi@esi.dz
                 </ContactLink>
               </ContactItem>
               <ContactItem>
                 <ContactLabel>📍 Location</ContactLabel>
-                <ContactValue>Your City, Country</ContactValue>
+                <ContactValue>Algiers, Algeria</ContactValue>
               </ContactItem>
               <ContactItem>
                 <ContactLabel>🌐 Social</ContactLabel>
                 <SocialLinks>
                   <SocialLink
-                    href="https://github.com"
+                    href="https://github.com/elhassanefek"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     GitHub
                   </SocialLink>
                   <SocialLink
-                    href="https://linkedin.com"
+                    href="https://www.linkedin.com/in/el-hassane-fekairi-2088b0387/"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     LinkedIn
                   </SocialLink>
-                  <SocialLink
-                    href="https://twitter.com"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Twitter
-                  </SocialLink>
+                 
                 </SocialLinks>
               </ContactItem>
             </ContactInfo>
