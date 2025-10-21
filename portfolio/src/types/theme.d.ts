@@ -17,11 +17,15 @@ declare module "styled-components" {
         pink: string;
         blue: string;
         peach: string;
+        yellow: string;
+        mint: string;
       };
       border: string;
       shadow: string;
     };
     fonts: {
+      headingSerif: string;
+      headingSans: string;
       heading: string;
       body: string;
       mono: string;

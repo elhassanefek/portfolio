@@ -30,29 +30,42 @@ export const Contact: React.FC = () => {
 
   return (
     <ContactSection id="contact">
+      <DecorativeShapes>
+        <Shape1 />
+        <Shape2 />
+        <Shape3 />
+      </DecorativeShapes>
+
       <Container>
+        <SectionHeader>
+          <SectionTitle>LET'S TALK</SectionTitle>
+          <TitleUnderline />
+        </SectionHeader>
+
         <ContentWrapper>
           <TextColumn>
-            <SectionTitle>Let's Work Together</SectionTitle>
-            <ContactText>
-              I'm always interested in hearing about new projects and
-              opportunities. Whether you have a question or just want to say hi,
-              feel free to reach out!
-            </ContactText>
+            <InfoCard>
+              <InfoTitle>Get in Touch</InfoTitle>
+              <ContactText>
+                I'm always interested in hearing about new projects and
+                opportunities. Whether you have a question or just want to say hi,
+                feel free to reach out!
+              </ContactText>
+            </InfoCard>
 
             <ContactInfo>
               <ContactItem>
-                <ContactLabel>Email</ContactLabel>
+                <ContactLabel>📧 Email</ContactLabel>
                 <ContactLink href="mailto:your.email@example.com">
                   your.email@example.com
                 </ContactLink>
               </ContactItem>
               <ContactItem>
-                <ContactLabel>Location</ContactLabel>
+                <ContactLabel>📍 Location</ContactLabel>
                 <ContactValue>Your City, Country</ContactValue>
               </ContactItem>
               <ContactItem>
-                <ContactLabel>Social</ContactLabel>
+                <ContactLabel>🌐 Social</ContactLabel>
                 <SocialLinks>
                   <SocialLink
                     href="https://github.com"
@@ -82,8 +95,10 @@ export const Contact: React.FC = () => {
 
           <FormColumn>
             <ContactForm onSubmit={handleSubmit}>
+              <FormTitle>Send a Message</FormTitle>
+              
               <FormGroup>
-                <Label htmlFor="name">Name</Label>
+                <Label htmlFor="name">Name *</Label>
                 <Input
                   type="text"
                   id="name"
@@ -96,7 +111,7 @@ export const Contact: React.FC = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Email *</Label>
                 <Input
                   type="email"
                   id="email"
@@ -109,7 +124,7 @@ export const Contact: React.FC = () => {
               </FormGroup>
 
               <FormGroup>
-                <Label htmlFor="message">Message</Label>
+                <Label htmlFor="message">Message *</Label>
                 <TextArea
                   id="message"
                   name="message"
@@ -134,17 +149,165 @@ export const Contact: React.FC = () => {
 
 const ContactSection = styled.section`
   padding: ${({ theme }) => theme.spacing["5xl"]} 0;
-  background-color: ${({ theme }) => theme.colors.backgroundAlt};
+  background-color: #AEC6FF;
+  position: relative;
+  overflow: hidden;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     padding: ${({ theme }) => theme.spacing["3xl"]} 0;
   }
 `;
 
+const DecorativeShapes = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+`;
+
+const Shape1 = styled.div`
+  position: absolute;
+  top: 15%;
+  right: 10%;
+  width: 100px;
+  height: 100px;
+  background: #FFFACD;
+  border: 5px solid #000;
+  transform: rotate(45deg);
+  box-shadow: 8px 8px 0 #000;
+  animation: float 7s ease-in-out infinite;
+  
+  @keyframes float {
+    0%, 100% { transform: rotate(45deg) translateY(0px); }
+    50% { transform: rotate(45deg) translateY(-20px); }
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: 60px;
+    height: 60px;
+    border-width: 3px;
+    box-shadow: 5px 5px 0 #000;
+  }
+`;
+
+const Shape2 = styled.div`
+  position: absolute;
+  bottom: 10%;
+  left: 5%;
+  width: 90px;
+  height: 90px;
+  background: #FFB5E8;
+  border: 5px solid #000;
+  border-radius: 50%;
+  box-shadow: 7px 7px 0 #000;
+  animation: float 6s ease-in-out infinite 1s;
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    width: 55px;
+    height: 55px;
+    border-width: 3px;
+    box-shadow: 4px 4px 0 #000;
+  }
+`;
+
+const Shape3 = styled.div`
+  position: absolute;
+  top: 60%;
+  left: 8%;
+  width: 0;
+  height: 0;
+  border-left: 50px solid transparent;
+  border-right: 50px solid transparent;
+  border-bottom: 87px solid #B4E7CE;
+  filter: drop-shadow(7px 7px 0 #000);
+  animation: float 8s ease-in-out infinite 2s;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: -50px;
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+    border-bottom: 87px solid #000;
+    z-index: -1;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 52px solid #B4E7CE;
+    
+    &::after {
+      left: -30px;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+      border-bottom: 52px solid #000;
+    }
+  }
+`;
+
+const SectionHeader = styled.div`
+  text-align: center;
+  margin-bottom: ${({ theme }) => theme.spacing["3xl"]};
+  position: relative;
+  z-index: 1;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: ${({ theme }) => theme.fontSizes["6xl"]};
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  display: inline-block;
+  background: #B4E7CE;
+  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.xl}`};
+  border: 5px solid #000;
+  box-shadow: 8px 8px 0 #000;
+  border-radius: 0;
+  animation: ${fadeInUp} 0.8s ease-out;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 11px 11px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+    border-width: 4px;
+    box-shadow: 6px 6px 0 #000;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+    border-width: 3px;
+    box-shadow: 4px 4px 0 #000;
+  }
+`;
+
+const TitleUnderline = styled.div`
+  width: 120px;
+  height: 6px;
+  background: #000;
+  margin: ${({ theme }) => theme.spacing.md} auto 0;
+  border-radius: 0;
+`;
+
 const ContentWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: ${({ theme }) => theme.spacing["3xl"]};
+  position: relative;
+  z-index: 1;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     grid-template-columns: 1fr;
@@ -154,22 +317,58 @@ const ContentWrapper = styled.div`
 
 const TextColumn = styled.div`
   animation: ${fadeInUp} 0.8s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xl};
 `;
 
-const SectionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSizes["5xl"]};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+const InfoCard = styled.div`
+  background: #FFF;
+  border: 5px solid #000;
+  border-radius: 0;
+  padding: ${({ theme }) => theme.spacing["2xl"]};
+  box-shadow: 10px 10px 0 #000;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 13px 13px 0 #000;
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+    padding: ${({ theme }) => theme.spacing.xl};
+    border-width: 4px;
+    box-shadow: 7px 7px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    border-width: 3px;
+    box-shadow: 5px 5px 0 #000;
+  }
+`;
+
+const InfoTitle = styled.h3`
+  font-size: ${({ theme }) => theme.fontSizes["2xl"]};
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  margin-bottom: ${({ theme }) => theme.spacing.md};
+  letter-spacing: 0.5px;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes.xl};
   }
 `;
 
 const ContactText = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
+  font-size: ${({ theme }) => theme.fontSizes.base};
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
-  color: ${({ theme }) => theme.colors.textLight};
-  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  color: #000;
+  font-weight: 500;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+  }
 `;
 
 const ContactInfo = styled.div`
@@ -178,51 +377,76 @@ const ContactInfo = styled.div`
   gap: ${({ theme }) => theme.spacing.lg};
 `;
 
-const ContactItem = styled.div``;
+const ContactItem = styled.div`
+  background: #FFF;
+  border: 4px solid #000;
+  border-radius: 0;
+  padding: ${({ theme }) => theme.spacing.lg};
+  box-shadow: 6px 6px 0 #000;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 8px 8px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: ${({ theme }) => theme.spacing.md};
+    border-width: 3px;
+    box-shadow: 5px 5px 0 #000;
+  }
+`;
 
 const ContactLabel = styled.div`
   font-size: ${({ theme }) => theme.fontSizes.sm};
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: ${({ theme }) => theme.colors.textMuted};
+  color: #000;
   margin-bottom: ${({ theme }) => theme.spacing.xs};
-  font-weight: ${({ theme }) => theme.fontWeights.semibold};
+  font-weight: 800;
 `;
 
 const ContactLink = styled.a`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.primary};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  color: #000;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
 
   &:hover {
-    text-decoration: underline;
+    text-decoration-thickness: 3px;
   }
 `;
 
 const ContactValue = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.lg};
-  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSizes.base};
+  color: #000;
+  font-weight: 600;
 `;
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: ${({ theme }) => theme.spacing.md};
+  gap: ${({ theme }) => theme.spacing.sm};
   flex-wrap: wrap;
 `;
 
 const SocialLink = styled.a`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+  color: #000;
   padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-  background-color: ${({ theme }) => theme.colors.accent.blue};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  transition: all ${({ theme }) => theme.transitions.fast};
+  background-color: #FFFACD;
+  border: 3px solid #000;
+  border-radius: 0;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 3px 3px 0 #000;
+  transition: all 0.3s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: white;
-    transform: translateY(-2px);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #000;
   }
 `;
 
@@ -234,10 +458,41 @@ const ContactForm = styled.form`
   display: flex;
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.lg};
-  background-color: ${({ theme }) => theme.colors.background};
-  padding: ${({ theme }) => theme.spacing.xl};
-  border-radius: ${({ theme }) => theme.borderRadius.xl};
-  box-shadow: ${({ theme }) => theme.shadows.md};
+  background-color: #FFF;
+  padding: ${({ theme }) => theme.spacing["2xl"]};
+  border-radius: 0;
+  border: 5px solid #000;
+  box-shadow: 10px 10px 0 #000;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 13px 13px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    padding: ${({ theme }) => theme.spacing.xl};
+    border-width: 4px;
+    box-shadow: 7px 7px 0 #000;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    border-width: 3px;
+    box-shadow: 5px 5px 0 #000;
+  }
+`;
+
+const FormTitle = styled.h3`
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  font-weight: 900;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: ${({ theme }) => theme.spacing.sm};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes.lg};
+  }
 `;
 
 const FormGroup = styled.div`
@@ -248,46 +503,56 @@ const FormGroup = styled.div`
 
 const Label = styled.label`
   font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: ${({ theme }) => theme.fontWeights.medium};
-  color: ${({ theme }) => theme.colors.text};
+  font-weight: 800;
+  color: #000;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 `;
 
 const Input = styled.input`
-  padding: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
   font-size: ${({ theme }) => theme.fontSizes.base};
-  border: 2px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background-color: ${({ theme }) => theme.colors.backgroundAlt};
-  color: ${({ theme }) => theme.colors.text};
-  transition: border-color ${({ theme }) => theme.transitions.fast};
+  border: 3px solid #000;
+  border-radius: 0;
+  background-color: #F5F5F5;
+  color: #000;
+  font-weight: 500;
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
+    background-color: #FFF;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.textMuted};
+    color: #666;
   }
 `;
 
 const TextArea = styled.textarea`
-  padding: ${({ theme }) => theme.spacing.sm};
+  padding: ${({ theme }) => theme.spacing.md};
   font-size: ${({ theme }) => theme.fontSizes.base};
-  border: 2px solid ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.borderRadius.md};
-  background-color: ${({ theme }) => theme.colors.backgroundAlt};
-  color: ${({ theme }) => theme.colors.text};
+  border: 3px solid #000;
+  border-radius: 0;
+  background-color: #F5F5F5;
+  color: #000;
+  font-weight: 500;
   resize: vertical;
   font-family: inherit;
-  transition: border-color ${({ theme }) => theme.transitions.fast};
+  box-shadow: 4px 4px 0 #000;
+  transition: all 0.3s ease;
 
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.colors.primary};
+    background-color: #FFF;
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #000;
   }
 
   &::placeholder {
-    color: ${({ theme }) => theme.colors.textMuted};
+    color: #666;
   }
 `;

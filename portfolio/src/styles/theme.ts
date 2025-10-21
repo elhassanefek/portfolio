@@ -1,30 +1,35 @@
 export const theme = {
   colors: {
-    primary: "#7DD4C7",
-    primaryDark: "#5FBFB3",
-    primaryLight: "#9FE0D6",
+    // Primary switched to mint/teal to remove orange from the UI
+    primary: "#31C7B1",
+    primaryDark: "#26A896",
+    primaryLight: "#7FE1D3",
 
-    background: "#F5F1E8",
+    background: "#FFF8E6", // warm cream
     backgroundAlt: "#FFFFFF",
 
-    text: "#1A1A1A",
-    textLight: "#6B6B6B",
-    textMuted: "#9E9E9E",
+    text: "#111111",
+    textLight: "#3D3D3D",
+    textMuted: "#6F6F6F",
 
     accent: {
-      pink: "#FFE5E5",
-      blue: "#E5F4F3",
-      peach: "#FFE8DB",
+      pink: "#FCA5A5",
+      blue: "#93C5FD",
+      peach: "#FCD5CE",
+      yellow: "#FFE75E",
+      mint: "#A7F3D0",
     },
 
-    border: "#E0DDD4",
-    shadow: "rgba(0, 0, 0, 0.08)",
+    border: "#111111",
+    shadow: "rgba(0, 0, 0, 1)",
   },
 
   fonts: {
+    headingSerif: "'Playfair Display', serif",
+    headingSans: "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif",
     heading: "'Playfair Display', serif",
-    body: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-    mono: "'Fira Code', monospace",
+    body: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
+    mono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
   },
 
   fontSizes: {
@@ -78,21 +83,22 @@ export const theme = {
   },
 
   borderRadius: {
-    sm: "0.375rem", // 6px
-    md: "0.5rem", // 8px
-    lg: "0.75rem", // 12px
-    xl: "1rem", // 16px
-    "2xl": "1.5rem", // 24px
+    sm: "4px",
+    md: "10px",
+    lg: "14px",
+    xl: "18px",
+    "2xl": "24px",
     full: "9999px",
   },
 
   shadows: {
-    sm: "0 1px 2px 0 rgba(0, 0, 0, 0.05)",
-    base: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-    md: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-    lg: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-    xl: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)",
-    "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+    // Hard offset shadows for neobrutalism
+    sm: "3px 3px 0 0 #111111",
+    base: "4px 4px 0 0 #111111",
+    md: "6px 6px 0 0 #111111",
+    lg: "8px 8px 0 0 #111111",
+    xl: "10px 10px 0 0 #111111",
+    "2xl": "12px 12px 0 0 #111111",
   },
 
   transitions: {
