@@ -103,8 +103,15 @@ const HeaderContent = styled.div`
 
 const Logo = styled.div`
   font-family: ${({ theme }) => theme.fonts.heading};
-  font-size: ${({ theme }) => theme.fontSizes["2xl"]};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
   font-weight: 900;
+  white-space: nowrap;
+  margin-right: ${({ theme }) => theme.spacing.xs};
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes["2xl"]};
+    margin-right: 0;
+  }
   color: #000;
   letter-spacing: -1px;
   text-transform: uppercase;
@@ -215,6 +222,10 @@ const MobileMenuButton = styled.button<{ $isOpen: boolean }>`
   padding: ${({ theme }) => theme.spacing.sm};
   box-shadow: 4px 4px 0 #000;
   transition: all 0.2s ease;
+  padding-right : 0.5rem;
+  padding-left : 0.5rem;
+
+
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     display: flex;

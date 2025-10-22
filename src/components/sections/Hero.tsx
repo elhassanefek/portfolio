@@ -3,6 +3,16 @@ import styled from "styled-components";
 import { Button } from "../common/Button";
 import { fadeInUp, fadeIn } from "../../styles/animations";
 
+// Shared text styles for consistent text wrapping
+const textStyles = `
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: break-word;
+`;
+
 export const Hero: React.FC = () => {
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
@@ -79,9 +89,14 @@ const HeroSection = styled.section`
   background: #F5F5F5;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.md}`};
-    padding-top: calc(${({ theme }) => theme.spacing["3xl"]} + 60px);
+    padding: ${({ theme }) => `${theme.spacing.xl} ${theme.spacing.sm}`};
+    padding-top: calc(${({ theme }) => theme.spacing["4xl"]} + 100px);
     overflow-x: hidden;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: ${({ theme }) => `${theme.spacing.lg} ${theme.spacing.xs}`};
+    padding-top: calc(${({ theme }) => theme.spacing["3xl"]} + 80px);
   }
 `;
 
@@ -203,8 +218,12 @@ const HeroContainer = styled.div`
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.md};
+  padding: 0 ${({ theme }) => theme.spacing.sm};
   box-sizing: border-box;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    padding: 0 ${({ theme }) => theme.spacing.md};
+  }
   
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
     max-width: 1200px;
@@ -239,14 +258,25 @@ const HeroContent = styled.div`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.spacing["2xl"]};
+    gap: ${({ theme }) => theme.spacing.xl};
     text-align: center;
-    padding: ${({ theme }) => theme.spacing["2xl"]};
-    border-width: 4px;
-    box-shadow: 8px 8px 0 #000;
+    padding: ${({ theme }) => theme.spacing.lg};
+    border-width: 3px;
+    box-shadow: 6px 6px 0 #000;
+    margin: 0 ${({ theme }) => theme.spacing.xs};
+    width: calc(100% - ${({ theme }) => `calc(${theme.spacing.xs} * 2)`});
+    box-sizing: border-box;
     
     &:hover {
-      box-shadow: 10px 10px 0 #000;
+      box-shadow: 6px 6px 0 #000;
+      transform: none;
+    }
+    
+    @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+      padding: ${({ theme }) => theme.spacing.md};
+      gap: ${({ theme }) => theme.spacing.lg};
+      border-width: 2px;
+      box-shadow: 4px 4px 0 #000;
     }
   }
   
@@ -261,6 +291,11 @@ const TextContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  ${textStyles}
+  
+  > * {
+    ${textStyles}
+  }
   text-align: center;
   width: 100%;
   max-width: 100%;
@@ -280,6 +315,7 @@ const Greeting = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.base};
   color: #000;
   margin-bottom: ${({ theme }) => theme.spacing.md};
+  ${textStyles}
   font-weight: 800;
   display: inline-block;
   background: #FFFACD;
@@ -298,43 +334,57 @@ const Greeting = styled.p`
 `;
 
 const Title = styled.h1`
-  font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-  margin: 0 0 ${({ theme }) => theme.spacing.sm} 0;
-  line-height: 1.2;
+  font-size: ${({ theme }) => `calc(${theme.fontSizes.xl} + 2px)`};
+  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
+  line-height: 1.15;
+  ${textStyles}
   font-family: ${({ theme }) => theme.fonts.headingSerif};
   word-break: break-word;
   hyphens: auto;
   max-width: 100%;
   
   @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["2xl"]};
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+    line-height: 1.2;
   }
   
   @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["5xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
   }
   
   @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
-    font-size: ${({ theme }) => theme.fontSizes["6xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["5xl"]};
   }
   
   @media (min-width: ${({ theme }) => theme.breakpoints.xl}) {
-    font-size: ${({ theme }) => theme.fontSizes["7xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["6xl"]};
   }
+  
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: -0.02em;
   color: #000;
-  text-shadow: 4px 4px 0 #5dd0c0;
+  text-shadow: 3px 3px 0 #5dd0c0;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    font-size: ${({ theme }) => theme.fontSizes["5xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
     text-shadow: 3px 3px 0 #5dd0c0;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
     text-shadow: 2px 2px 0 #5dd0c0;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes["2xl"]};
+    line-height: 1.1;
+    text-shadow: 1.5px 1.5px 0 #5dd0c0;
   }
 `;
 
@@ -342,6 +392,7 @@ const Subtitle = styled.h2`
   font-size: ${({ theme }) => theme.fontSizes["2xl"]};
   color: #000;
   font-weight: 700;
+  ${textStyles}
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   font-family: ${({ theme }) => theme.fonts.body};
   font-style: italic;
@@ -355,12 +406,19 @@ const Description = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.base};
   line-height: 1.6;
   color: #000;
+  ${textStyles}
   margin: 0 auto ${({ theme }) => theme.spacing.lg} auto;
   max-width: 100%;
   width: 100%;
   box-sizing: border-box;
   padding: 0;
   text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: break-word;
   
   @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes.base};
@@ -430,7 +488,7 @@ const PrimaryButton = styled(Button)`
   color: #000;
   border: 3px solid #000;
   border-radius: 0;
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
   font-weight: 900;
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   letter-spacing: 0.5px;
@@ -438,7 +496,7 @@ const PrimaryButton = styled(Button)`
   box-shadow: 5px 5px 0 #000;
   text-transform: uppercase;
   cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   width: 100%;
   max-width: 100%;
   text-align: center;
@@ -448,8 +506,8 @@ const PrimaryButton = styled(Button)`
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  line-height: 1.2;
-  min-height: 44px;
+  line-height: 1.1;
+  min-height: 40px;
   position: relative;
   z-index: 1;
 
@@ -465,19 +523,27 @@ const PrimaryButton = styled(Button)`
   }
   
   @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes.sm};
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
+    min-height: 44px;
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
     font-size: ${({ theme }) => theme.fontSizes.base};
     padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.xl}`};
     min-height: 48px;
   }
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes.xs};
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-    min-height: 40px;
+    font-size: ${({ theme }) => `calc(${theme.fontSizes.xs} - 2px)`};
+    padding: ${({ theme }) => `${theme.spacing['xs']} ${theme.spacing.sm}`};
+    min-height: 34px;
     box-shadow: 3px 3px 0 #000;
+    letter-spacing: 0.2px;
+    border-width: 2px;
     
     &:hover:not(:disabled) {
-      box-shadow: 5px 5px 0 #000;
+      box-shadow: 4px 4px 0 #000;
     }
   }
 `;
@@ -487,7 +553,7 @@ const SecondaryButton = styled(Button)`
   color: #000;
   border: 3px solid #000;
   border-radius: 0;
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
+  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
   font-weight: 900;
   font-family: 'Inter', 'Helvetica Neue', sans-serif;
   letter-spacing: 0.5px;
@@ -495,7 +561,7 @@ const SecondaryButton = styled(Button)`
   box-shadow: 5px 5px 0 #000;
   text-transform: uppercase;
   cursor: pointer;
-  font-size: ${({ theme }) => theme.fontSizes.sm};
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   width: 100%;
   max-width: 100%;
   text-align: center;
@@ -505,8 +571,8 @@ const SecondaryButton = styled(Button)`
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  line-height: 1.2;
-  min-height: 44px;
+  line-height: 1.1;
+  min-height: 40px;
   position: relative;
   z-index: 1;
 
@@ -529,12 +595,13 @@ const SecondaryButton = styled(Button)`
   
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes.xs};
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-    min-height: 40px;
+    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
+    min-height: 36px;
     box-shadow: 3px 3px 0 #000;
+    letter-spacing: 0.3px;
     
     &:hover:not(:disabled) {
-      box-shadow: 5px 5px 0 #000;
+      box-shadow: 4px 4px 0 #000;
     }
   }
 `;

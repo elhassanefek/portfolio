@@ -14,6 +14,16 @@ import {
 import { projects } from "../../data/projects";
 import { fadeInUp } from "../../styles/animations";
 
+// Shared text styles for consistent text wrapping
+const textStyles = `
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: break-word;
+`;
+
 export const Projects: React.FC = () => {
   return (
     <ProjectsSection id="projects">
@@ -279,9 +289,24 @@ const SectionHeader = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSizes["6xl"]};
+  font-size: ${({ theme }) => theme.fontSizes["3xl"]};
   font-weight: 900;
   color: #000;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    font-size: ${({ theme }) => theme.fontSizes["5xl"]};
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    font-size: ${({ theme }) => theme.fontSizes["6xl"]};
+  }
   text-transform: uppercase;
   letter-spacing: -0.02em;
   margin-bottom: ${({ theme }) => theme.spacing.md};
@@ -325,6 +350,9 @@ const SectionDescription = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.lg};
   color: #000;
   font-weight: 600;
+  ${textStyles}
+  text-align: center;
+  max-width: 100%;
   margin-top: ${({ theme }) => theme.spacing.md};
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -440,6 +468,9 @@ const ProjectTitle = styled.h3`
   font-size: ${({ theme }) => theme.fontSizes["3xl"]};
   font-weight: 900;
   color: #000;
+  ${textStyles}
+  line-height: 1.2;
+  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
   text-transform: uppercase;
   margin-bottom: ${({ theme }) => theme.spacing.xs};
   letter-spacing: -0.01em;
@@ -453,6 +484,9 @@ const ProjectSubtitle = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.sm};
   font-weight: 700;
   text-transform: uppercase;
+  ${textStyles}
+  margin: 0 0 ${({ theme }) => theme.spacing.md} 0;
+  color: #555;
   color: #000;
   opacity: 0.6;
   letter-spacing: 0.5px;
@@ -498,6 +532,9 @@ const ProjectDescription = styled.p`
   font-size: ${({ theme }) => theme.fontSizes.base};
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
   color: #000;
+  ${textStyles}
+  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+  max-width: 100%;
   font-weight: 500;
   flex: 1;
 

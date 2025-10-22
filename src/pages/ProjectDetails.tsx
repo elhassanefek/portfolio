@@ -482,6 +482,16 @@ const ProjectBadge = styled.div`
   }
 `;
 
+// Shared text styles for consistent text wrapping
+const textStyles = `
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: none;
+  -webkit-hyphens: none;
+  -ms-hyphens: none;
+  word-break: break-word;
+`;
+
 const BadgeIcon = styled.span`
   font-size: ${({ theme }) => theme.fontSizes.xl};
 `;
@@ -492,20 +502,25 @@ const BadgeText = styled.span`
   text-transform: uppercase;
   color: #000;
   letter-spacing: 0.5px;
+  ${textStyles}
 `;
 
 const HeaderContent = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
+  ${textStyles}
+  
+  > * {
+    ${textStyles}
+  }
 `;
 
 const Heading = styled.h1`
-  font-size: ${({ theme }) => theme.fontSizes["6xl"]};
+  font-size: ${({ theme }) => theme.fontSizes["2xl"]};
   font-weight: 900;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  ${textStyles}
   line-height: 1.1;
   text-transform: uppercase;
   letter-spacing: -0.02em;
@@ -515,11 +530,11 @@ const Heading = styled.h1`
   hyphens: auto;
   max-width: 100%;
   
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["5xl"]};
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
+    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
   }
   
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
     font-size: ${({ theme }) => theme.fontSizes["4xl"]};
   }
 `;
@@ -528,6 +543,7 @@ const Subheading = styled.h2`
   font-style: italic;
   font-size: ${({ theme }) => theme.fontSizes["2xl"]};
   font-weight: 700;
+  ${textStyles}
   margin-bottom: ${({ theme }) => theme.spacing.md};
   color: #000;
   
@@ -540,12 +556,10 @@ const Desc = styled.p`
   color: #000;
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
   font-size: ${({ theme }) => theme.fontSizes.lg};
+  ${textStyles}
   font-weight: 500;
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes.base};
@@ -628,19 +642,19 @@ const Section = styled.section`
 `;
 
 const SectionTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes["4xl"]};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
   font-weight: 900;
   text-align: center;
-  margin: ${({ theme }) => `0 0 ${theme.spacing["2xl"]} 0`};
+  margin: ${({ theme }) => `0 0 ${theme.spacing.lg} 0`};
   text-transform: uppercase;
   letter-spacing: -0.02em;
   position: relative;
-  padding-bottom: ${({ theme }) => theme.spacing.md};
+  padding-bottom: ${({ theme }) => theme.spacing.sm};
   color: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${({ theme }) => theme.spacing.sm};
+  gap: ${({ theme }) => theme.spacing.xs};
   
   &::after {
     content: '';
@@ -648,18 +662,23 @@ const SectionTitle = styled.h3`
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 100px;
-    height: 6px;
+    width: 60px;
+    height: 3px;
     background: #000;
   }
   
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+  @media (min-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes["2xl"]};
     margin: ${({ theme }) => `0 0 ${theme.spacing.xl} 0`};
+    
+    &::after {
+      width: 80px;
+      height: 4px;
+    }
+  }
+  
+  @media (min-width: ${({ theme }) => theme.breakpoints.lg}) {
+    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
   }
 `;
 
@@ -678,9 +697,7 @@ const Body = styled.p`
   font-weight: 500;
   white-space: pre-line;
   max-width: 100%;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  hyphens: auto;
+  ${textStyles}
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
     font-size: ${({ theme }) => theme.fontSizes.base};
@@ -750,6 +767,7 @@ const CardHeading = styled.h4`
   font-size: ${({ theme }) => theme.fontSizes["2xl"]};
   font-weight: 900;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
+  ${textStyles}
   line-height: 1.3;
   color: #000;
   
@@ -766,6 +784,7 @@ const CardBody = styled.p`
   color: #000;
   line-height: ${({ theme }) => theme.lineHeights.relaxed};
   font-weight: 500;
+  ${textStyles}
 `;
 
 const DottedConnector = styled.div`

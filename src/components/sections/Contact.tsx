@@ -1,12 +1,79 @@
 
 
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { Container } from "../common/Container";
 import { Button } from "../common/Button";
 import { fadeInUp } from "../../styles/animations";
-import emailjs from "@emailjs/browser"
+import emailjs from "@emailjs/browser";
 
+// Toast animation
+const slideIn = keyframes`
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-20px); opacity: 0; }
+`;
+
+// Toast container
+const ToastContainer = styled.div`
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+`;
+
+// Toast component
+const Toast = styled.div<{ type: 'success' | 'error' }>`
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 250px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  pointer-events: auto;
+  animation: ${slideIn} 0.3s ease-out forwards;
+  background: ${({ type }) => type === 'success' ? '#4CAF50' : '#F44336'};
+  border: 2px solid ${({ type }) => type === 'success' ? '#388E3C' : '#D32F2F'};
+  
+  &.exiting {
+    animation: ${fadeOut} 0.3s ease-out forwards;
+  }
+  
+  button {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-left: 10px;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    
+    &:hover {
+      opacity: 1;
+    }
+  }
+`;
+
+
+interface ToastMessage {
+  id: number;
+  message: string;
+  type: 'success' | 'error';
+  visible: boolean;
+}
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +81,41 @@ export const Contact: React.FC = () => {
     email: "",
     message: "",
   });
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    const id = Date.now();
+    const duration = type === 'success' ? 3000 : 5000;
+    
+    // Add new toast
+    setToasts(prev => [...prev, { id, message, type, visible: true }]);
+    
+    // Remove toast after duration
+    setTimeout(() => {
+      setToasts(prev => 
+        prev.map(t => 
+          t.id === id ? { ...t, visible: false } : t
+        )
+      );
+      
+      // Remove from DOM after animation
+      setTimeout(() => {
+        setToasts(prev => prev.filter(t => t.id !== id));
+      }, 300);
+    }, duration);
+  };
+  
+  const removeToast = (id: number) => {
+    setToasts(prev => 
+      prev.map(t => 
+        t.id === id ? { ...t, visible: false } : t
+      )
+    );
+    
+    setTimeout(() => {
+      setToasts(prev => prev.filter(t => t.id !== id));
+    }, 300);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -41,17 +143,30 @@ export const Contact: React.FC = () => {
       );
 
       console.log("Message sent:", result.text);
-      alert("Message sent successfully!");
+      showToast("Message sent successfully!", "success");
       setFormData({ name: "", email: "", message: "" }); // reset form
     } catch (error) {
       console.error("Error sending message:", error);
-      alert("Failed to send message. Please try again.");
+      showToast("Failed to send message. Please try again.", "error");
     }
   };
  
 
   return (
-    <ContactSection id="contact">
+    <>
+      <ToastContainer>
+        {toasts.map(toast => (
+          <Toast 
+            key={toast.id} 
+            type={toast.type}
+            className={!toast.visible ? 'exiting' : ''}
+          >
+            <span>{toast.message}</span>
+            <button onClick={() => removeToast(toast.id)}>×</button>
+          </Toast>
+        ))}
+      </ToastContainer>
+      <ContactSection id="contact">
       <DecorativeShapes>
         <Shape1 />
         <Shape2 />
@@ -160,6 +275,7 @@ export const Contact: React.FC = () => {
         </ContentWrapper>
       </Container>
     </ContactSection>
+    </>
   );
 };
 
@@ -538,7 +654,15 @@ const ContactForm = styled.form`
   transition: all 0.3s ease;
   width: 100%;
   box-sizing: border-box;
-  margin-right : -2rem ;
+  margin-right: -2rem;
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    margin-right: -1.5rem;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    margin-right: -1rem;
+  }
 
   &:hover {
     transform: translate(-3px, -3px);
