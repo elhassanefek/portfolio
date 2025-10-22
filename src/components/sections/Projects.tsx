@@ -364,13 +364,13 @@ const SectionDescription = styled.p`
 
 const CarouselWrapper = styled.div`
   position: relative;
-  max-width: 1200px;
-  overflow: hidden;
+  width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing["2xl"]} ${({ theme }) => theme.spacing["4xl"]};
+  padding: 2rem 3rem;
   overflow: visible;
-  --carousel-arrow-extra-left: 12px;
-  --carousel-arrow-extra-right: 12px;
+  --carousel-arrow-extra-left: 16px;
+  --carousel-arrow-extra-right: 16px;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
     display: none;
@@ -380,22 +380,41 @@ const CarouselWrapper = styled.div`
 const StyledCarousel = styled(Carousel)`
   position: relative;
   width: 100%;
- 
-
-  --carousel-item-basis: 32;
-  --carousel-gap: 72px;
-  --carousel-arrows-top: 58%;
-  --carousel-arrow-size: 52px;
-  --carousel-arrow-extra-left: 16px;
-  --carousel-arrow-extra-right: 16px;
-  --carousel-edge-offset: 64px;
+  padding: 1.5rem 0;
+  
+  --carousel-item-basis: 28;
+  --carousel-gap: 3rem;
+  --carousel-arrows-top: 50%;
+  --carousel-arrow-size: 48px;
+  --carousel-edge-offset: 2rem;
+  
+  .carousel-content {
+    padding: 0.5rem 0;
+  }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    --carousel-item-basis: 46;
-    --carousel-gap: 56px;
-    --carousel-arrows-top: 56%;
-    --carousel-arrow-size: 50px;
-    --carousel-edge-offset: 48px;
+    --carousel-item-basis: 42;
+    --carousel-gap: 2.5rem;
+    --carousel-arrows-top: 50%;
+    --carousel-arrow-size: 44px;
+    --carousel-edge-offset: 1.5rem;
+    padding: 1rem 0;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    --carousel-item-basis: 80;
+    --carousel-gap: 2rem;
+    --carousel-arrows-top: 50%;
+    --carousel-arrow-size: 40px;
+    --carousel-edge-offset: 1rem;
+  }
+  
+  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
+    --carousel-item-basis: 100;
+    --carousel-gap: 1.5rem;
+    --carousel-arrows-top: 50%;
+    --carousel-arrow-size: 36px;
+    --carousel-edge-offset: 0.5rem;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
@@ -428,25 +447,28 @@ const GridWrapper = styled.div`
 
 const ProjectCard = styled.div<{ $color: string }>`
   background-color: ${({ $color }) => $color || "#FFF"};
-  border: 5px solid #000;
+  border: 4px solid #000;
   border-radius: 0;
-  padding: ${({ theme }) => theme.spacing["2xl"]};
-  min-height: 500px;
+  padding: 1.5rem;
+  height: 100%;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
-  box-shadow: 10px 10px 0 #000;
-  transition: all 0.3s ease;
+  box-shadow: 8px 8px 0 #000;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 0 0.25rem;
 
   &:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 13px 13px 0 #000;
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0 #000;
+    z-index: 2;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    min-height: 450px;
-    padding: ${({ theme }) => theme.spacing.xl};
-    border-width: 4px;
-    box-shadow: 7px 7px 0 #000;
+    min-height: 420px;
+    padding: 1.25rem;
+    border-width: 3px;
+    box-shadow: 6px 6px 0 #000;
   }
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
@@ -459,20 +481,19 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  gap: ${({ theme }) => theme.spacing.lg};
+  gap: 0.5rem;
 `;
 
 const ProjectHeader = styled.div``;
 
 const ProjectTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-  font-weight: 900;
+  font-size: 1.5rem;
+  font-weight: 800;
   color: #000;
   ${textStyles}
   line-height: 1.2;
-  margin: 0 0 ${({ theme }) => theme.spacing.xs} 0;
+  margin: 0 0 0.5rem 0;
   text-transform: uppercase;
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
   letter-spacing: -0.01em;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
@@ -493,8 +514,8 @@ const ProjectSubtitle = styled.p`
 `;
 
 const ArtworkWrapper = styled.div`
-  height: 220px;
-  border: 4px solid #000;
+  height: 180px;
+  border: 3px solid #000;
   border-radius: 0;
   background: #FFF;
   box-shadow: 6px 6px 0 #000;
@@ -529,14 +550,18 @@ const ArtworkWrapper = styled.div`
 `;
 
 const ProjectDescription = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  line-height: ${({ theme }) => theme.lineHeights.relaxed};
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: #000;
   ${textStyles}
-  margin: 0 0 ${({ theme }) => theme.spacing.lg} 0;
+  margin: 0.5rem 0 1rem;
   max-width: 100%;
   font-weight: 500;
   flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     font-size: ${({ theme }) => theme.fontSizes.sm};
@@ -552,19 +577,19 @@ const TagsContainer = styled.div`
 const Tag = styled.span`
   background-color: #FFF;
   color: #000;
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-  border: 3px solid #000;
-  border-radius: 0;
-  font-size: ${({ theme }) => theme.fontSizes.xs};
-  font-weight: 800;
+  padding: 0.15rem 0.6rem;
+  border: 2px solid #000;
+  border-radius: 1px;
+  font-size: 0.7rem;
+  font-weight: 700;
   text-transform: uppercase;
-  box-shadow: 3px 3px 0 #000;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
+  box-shadow: 1px 1px 0 #000;
+  transition: all 0.2s ease;
+  line-height: 1.3;
 
   &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 #000;
+    transform: translate(-1px, -1px);
+    box-shadow: 2px 2px 0 #000;
   }
 `;
 
@@ -572,9 +597,17 @@ const ProjectActions = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: ${({ theme }) => theme.spacing.md};
-  margin-top: ${({ theme }) => theme.spacing.lg};
+  gap: 0.5rem;
+  margin-top: 0.75rem;
   flex-wrap: wrap;
+  
+  button {
+    padding: 0.3rem 0.9rem;
+    font-size: 0.8rem;
+    min-height: 32px;
+    border-width: 2px;
+    font-weight: 600;
+  }
 
   a {
     text-decoration: none;
