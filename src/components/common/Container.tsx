@@ -22,8 +22,8 @@ const ContainerBase = styled.div<{ $maxWidth?: keyof typeof maxWidths; $padding?
   padding-right: ${({ $padding = true, theme }) => ($padding ? theme.spacing.lg : 0)};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding-left: ${({ $padding = true, theme }) => ($padding ? theme.spacing.md : 0)};
-    padding-right: ${({ $padding = true, theme }) => ($padding ? theme.spacing.md : 0)};
+    padding-left: ${({ $padding = true, theme }) => ($padding ? theme.spacing.sm : 0)};
+    padding-right: ${({ $padding = true, theme }) => ($padding ? theme.spacing.sm : 0)};
   }
 `;
 

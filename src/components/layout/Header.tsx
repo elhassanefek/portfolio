@@ -1,317 +1,199 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Container } from "../common/Container";
 import { Button } from "../common/Button";
+import { monoLabel } from "../../styles/mixins";
+import { profile } from "../../data/profile";
 
 const navItems = [
-  { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "About", to: "/#about" },
+  { label: "Experience", to: "/#experience" },
+  { label: "Projects", to: "/#projects" },
+  { label: "Skills", to: "/#skills" },
 ];
 
 export const Header: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const location = useLocation();
 
+  // Close the mobile menu after any navigation.
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    setMenuOpen(false);
+  }, [location.key]);
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollToSection = (href: string) => {
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-      setIsMobileMenuOpen(false);
-    }
-  };
+  // Close it with Escape too.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
 
   return (
-    <HeaderWrapper $isScrolled={isScrolled}>
+    <Bar id="top">
+      <SkipLink href="#main">Skip to content</SkipLink>
       <Container>
-        <HeaderContent>
-          <Logo>Fekairi Elhassane</Logo>
+        <Inner>
+          <Brand to="/">{profile.name}</Brand>
 
-          <DesktopNav>
-            {navItems.map((item) => (
-              <NavLink
-                key={item.label}
-                onClick={() => scrollToSection(item.href)}
-              >
-                {item.label}
-              </NavLink>
-            ))}
-            <CTAButton size="sm" onClick={() => scrollToSection("#contact")}>
-              Let's Talk
-            </CTAButton>
+          <DesktopNav aria-label="Main">
+            <NavList>
+              {navItems.map((item) => (
+                <li key={item.to}>
+                  <NavLink to={item.to}>{item.label}</NavLink>
+                </li>
+              ))}
+            </NavList>
+            <Button size="sm" to="/#contact">
+              Contact
+            </Button>
           </DesktopNav>
 
-          <MobileMenuButton
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            $isOpen={isMobileMenuOpen}
+          <MenuToggle
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="mobile-menu"
+            onClick={() => setMenuOpen((open) => !open)}
           >
-            <span></span>
-            <span></span>
-            <span></span>
-          </MobileMenuButton>
-        </HeaderContent>
+            {menuOpen ? "Close" : "Menu"}
+          </MenuToggle>
+        </Inner>
       </Container>
 
-      <MobileMenu $isOpen={isMobileMenuOpen}>
-        {navItems.map((item) => (
-          <MobileNavLink
-            key={item.label}
-            onClick={() => scrollToSection(item.href)}
-          >
-            {item.label}
-          </MobileNavLink>
-        ))}
-        <CTAButton fullWidth onClick={() => scrollToSection("#contact")}>
-          Let's Talk
-        </CTAButton>
-      </MobileMenu>
-    </HeaderWrapper>
+      {menuOpen && (
+        <MobileMenu id="mobile-menu" aria-label="Main">
+          <Container>
+            <MobileList>
+              {[...navItems, { label: "Contact", to: "/#contact" }].map((item) => (
+                <li key={item.to}>
+                  <MobileLink to={item.to}>{item.label}</MobileLink>
+                </li>
+              ))}
+            </MobileList>
+          </Container>
+        </MobileMenu>
+      )}
+    </Bar>
   );
 };
 
-const HeaderWrapper = styled.header<{ $isScrolled: boolean }>`
-  position: fixed;
+const Bar = styled.header`
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
   z-index: ${({ theme }) => theme.zIndex.sticky};
-  background-color: #AEC6FF;
-  border-bottom: 5px solid #000;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  padding: ${({ theme }) => theme.spacing.md} 0;
-  box-shadow: ${({ $isScrolled }) =>
-    $isScrolled ? "0 8px 0 #000" : "none"};
-  transform: ${({ $isScrolled }) =>
-    $isScrolled ? "translateY(0)" : "translateY(0)"};
+  background-color: ${({ theme }) => theme.colors.paper};
+  border-bottom: ${({ theme }) => theme.borders.base};
 `;
 
-const HeaderContent = styled.div`
+const SkipLink = styled.a`
+  ${monoLabel}
+  position: absolute;
+  left: ${({ theme }) => theme.spacing.sm};
+  top: 0;
+  z-index: ${({ theme }) => theme.zIndex.tooltip};
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  background-color: ${({ theme }) => theme.colors.accent};
+  color: ${({ theme }) => theme.colors.ink};
+  border: ${({ theme }) => theme.borders.base};
+  transform: translateY(-200%);
+
+  &:focus-visible {
+    transform: translateY(${({ theme }) => theme.spacing.xs});
+  }
+`;
+
+const Inner = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.sm};
+  min-height: ${({ theme }) => theme.layout.headerHeight};
 `;
 
-const Logo = styled.div`
+const Brand = styled(Link)`
   font-family: ${({ theme }) => theme.fonts.heading};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
   font-size: ${({ theme }) => theme.fontSizes.lg};
-  font-weight: 900;
-  white-space: nowrap;
-  margin-right: ${({ theme }) => theme.spacing.xs};
-  
-  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["2xl"]};
-    margin-right: 0;
-  }
-  color: #000;
-  letter-spacing: -1px;
   text-transform: uppercase;
-  background: #FFDEB4;
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
-  border: 4px solid #000;
-  box-shadow: 4px 4px 0 #000;
-  border-radius: 0;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-  }
-  
-  &:active {
-    transform: translate(1px, 1px);
-    box-shadow: 3px 3px 0 #000;
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-    border-width: 3px;
-    box-shadow: 3px 3px 0 #000;
-  }
+  letter-spacing: 0.02em;
+  white-space: nowrap;
 `;
 
 const DesktopNav = styled.nav`
   display: flex;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.lg};
+  gap: ${({ theme }) => theme.spacing.md};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
     display: none;
   }
 `;
 
-const NavLink = styled.button`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: 800;
-  color: #000;
-  background: #fff;
-  border: 3px solid #000;
-  border-radius: 0;
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  box-shadow: 3px 3px 0 #000;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
-  &:hover {
-    background: #B4E7CE;
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 #000;
-  }
-
-  &:active {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 #000;
-  }
+const NavList = styled.ul`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
 `;
 
-const CTAButton = styled(Button)`
-  background-color: #5dd0c0;
-  color: #000;
-  border: 4px solid #000;
-  border-radius: 0;
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.lg}`};
-  font-weight: 900;
-  font-family: 'Inter', 'Helvetica Neue', sans-serif;
-  letter-spacing: 0.5px;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 4px 0 #000;
-  text-transform: uppercase;
-  cursor: pointer;
+const NavLink = styled(Link)`
+  ${monoLabel}
   font-size: ${({ theme }) => theme.fontSizes.sm};
+  padding: ${({ theme }) => theme.spacing.xs} 2px;
+  border-bottom: ${({ theme }) => theme.borders.width} solid transparent;
 
-  &:hover:not(:disabled) {
-    background-color: #5dd0c0;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-  }
-
-  &:active:not(:disabled) {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 #000;
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    width: ${({ fullWidth }) => (fullWidth ? '100%' : 'auto')};
-    border-width: 3px;
-    box-shadow: 3px 3px 0 #000;
+  &:hover {
+    border-bottom-color: ${({ theme }) => theme.colors.ink};
   }
 `;
 
-const MobileMenuButton = styled.button<{ $isOpen: boolean }>`
+const MenuToggle = styled.button`
+  ${monoLabel}
   display: none;
+  min-height: 40px;
+  padding: 0 ${({ theme }) => theme.spacing.sm};
+  background-color: ${({ theme }) => theme.colors.surface};
+  border: ${({ theme }) => theme.borders.base};
+  box-shadow: ${({ theme }) => theme.shadows.sm};
+
+  &[aria-expanded="true"] {
+    background-color: ${({ theme }) => theme.colors.accent};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    display: inline-flex;
+    align-items: center;
+  }
+`;
+
+/* Overlays the page so opening/closing it never shifts the layout mid-scroll */
+const MobileMenu = styled.nav`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border-top: ${({ theme }) => theme.borders.base};
+  border-bottom: ${({ theme }) => theme.borders.base};
+  background-color: ${({ theme }) => theme.colors.paper};
+  box-shadow: ${({ theme }) => theme.shadows.md};
+
+  @media (min-width: ${({ theme }) => theme.breakpoints.md}) {
+    display: none;
+  }
+`;
+
+const MobileList = styled.ul`
+  display: flex;
   flex-direction: column;
-  gap: 5px;
-  background: #AEC6FF;
-  border: 4px solid #000;
-  border-radius: 0;
-  cursor: pointer;
-  padding: ${({ theme }) => theme.spacing.sm};
-  box-shadow: 4px 4px 0 #000;
-  transition: all 0.2s ease;
-  padding-right : 0.5rem;
-  padding-left : 0.5rem;
-
-
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    display: flex;
-  }
-
-  &:hover {
-    background: #B4D4FF;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-  }
-
-  &:active {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 #000;
-  }
-
-  span {
-    width: 24px;
-    height: 3px;
-    background-color: #000;
-    transition: all 0.3s ease;
-    border-radius: 0;
-    
-    ${({ $isOpen }) =>
-      $isOpen &&
-      `
-      &:nth-child(1) {
-        transform: rotate(45deg) translateY(8px);
-      }
-      &:nth-child(2) {
-        opacity: 0;
-      }
-      &:nth-child(3) {
-        transform: rotate(-45deg) translateY(-8px);
-      }
-    `}
-  }
+  padding: ${({ theme }) => theme.spacing.xs} 0;
 `;
 
-const MobileMenu = styled.div<{ $isOpen: boolean }>`
-  display: none;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    display: flex;
-    flex-direction: column;
-    gap: ${({ theme }) => theme.spacing.md};
-    position: absolute;
-    top: calc(100% + 8px);
-    left: ${({ theme }) => theme.spacing.lg};
-    right: ${({ theme }) => theme.spacing.lg};
-    background-color: #FFFACD;
-    padding: ${({ theme }) => theme.spacing.lg};
-    border: 4px solid #000;
-    border-radius: 0;
-    box-shadow: 6px 6px 0 #000;
-    transform: ${({ $isOpen }) =>
-      $isOpen ? "translateY(0)" : "translateY(-12px)"};
-    opacity: ${({ $isOpen }) => ($isOpen ? 1 : 0)};
-    pointer-events: ${({ $isOpen }) => ($isOpen ? "all" : "none")};
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+const MobileLink = styled(Link)`
+  display: block;
+  padding: ${({ theme }) => theme.spacing.sm} 0;
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  font-size: ${({ theme }) => theme.fontSizes.xl};
+  border-bottom: ${({ theme }) => theme.borders.thin};
 `;
 
-const MobileNavLink = styled.button`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  font-weight: 800;
-  color: #000;
-  background: #fff;
-  border: 3px solid #000;
-  border-radius: 0;
-  cursor: pointer;
-  text-align: left;
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.md}`};
-  box-shadow: 3px 3px 0 #000;
-  transition: all 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
-  &:hover {
-    background: #B4E7CE;
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 #000;
-  }
-
-  &:active {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 #000;
-  }
-`;
+export default Header;

@@ -14,14 +14,21 @@ const GlobalStyles = createGlobalStyle`
   html {
     font-size: 16px;
     scroll-behavior: smooth;
+    background-color: ${({ theme }) => theme.colors.paper};
   }
 
   body {
+    min-height: 100vh;
     font-family: ${({ theme }) => theme.fonts.body};
     font-size: ${({ theme }) => theme.fontSizes.base};
     line-height: ${({ theme }) => theme.lineHeights.normal};
-    color: ${({ theme }) => theme.colors.text};
-    background-color: ${({ theme }) => theme.colors.background};
+    color: ${({ theme }) => theme.colors.ink};
+    background-color: ${({ theme }) => theme.colors.paper};
+    /* Faint grid paper */
+    background-image:
+      linear-gradient(${({ theme }) => theme.colors.grid} 1px, transparent 1px),
+      linear-gradient(90deg, ${({ theme }) => theme.colors.grid} 1px, transparent 1px);
+    background-size: 24px 24px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
@@ -32,16 +39,17 @@ const GlobalStyles = createGlobalStyle`
     font-family: ${({ theme }) => theme.fonts.heading};
     font-weight: ${({ theme }) => theme.fontWeights.bold};
     line-height: ${({ theme }) => theme.lineHeights.tight};
-    color: ${({ theme }) => theme.colors.text};
+    color: ${({ theme }) => theme.colors.ink};
+    overflow-wrap: break-word;
   }
 
   h1 {
     font-size: ${({ theme }) => theme.fontSizes["6xl"]};
-    
+
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
       font-size: ${({ theme }) => theme.fontSizes["5xl"]};
     }
-    
+
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
       font-size: ${({ theme }) => theme.fontSizes["4xl"]};
     }
@@ -49,11 +57,11 @@ const GlobalStyles = createGlobalStyle`
 
   h2 {
     font-size: ${({ theme }) => theme.fontSizes["5xl"]};
-    
+
     @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
       font-size: ${({ theme }) => theme.fontSizes["4xl"]};
     }
-    
+
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
       font-size: ${({ theme }) => theme.fontSizes["3xl"]};
     }
@@ -61,7 +69,7 @@ const GlobalStyles = createGlobalStyle`
 
   h3 {
     font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-    
+
     @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
       font-size: ${({ theme }) => theme.fontSizes["2xl"]};
     }
@@ -71,15 +79,14 @@ const GlobalStyles = createGlobalStyle`
     margin-bottom: ${({ theme }) => theme.spacing.sm};
   }
 
+  code, kbd, samp, pre {
+    font-family: ${({ theme }) => theme.fonts.mono};
+  }
+
   /* Links */
   a {
     color: inherit;
     text-decoration: none;
-    transition: color ${({ theme }) => theme.transitions.fast};
-    
-    &:hover {
-      color: ${({ theme }) => theme.colors.primary};
-    }
   }
 
   /* Buttons */
@@ -88,11 +95,7 @@ const GlobalStyles = createGlobalStyle`
     cursor: pointer;
     border: none;
     background: none;
-    
-    &:focus-visible {
-      outline: 2px solid ${({ theme }) => theme.colors.primary};
-      outline-offset: 2px;
-    }
+    color: inherit;
   }
 
   /* Images */
@@ -111,33 +114,61 @@ const GlobalStyles = createGlobalStyle`
   input, textarea, select {
     font-family: inherit;
     font-size: inherit;
-    
-    &:focus {
-      outline: none;
-    }
+    color: inherit;
+  }
+
+  /* Thick, always-visible keyboard focus on every interactive element */
+  :focus {
+    outline: none;
+  }
+
+  :focus-visible {
+    outline: ${({ theme }) => theme.focus.outline};
+    outline-offset: ${({ theme }) => theme.focus.offset};
+  }
+
+  /* <main> is only focusable as the skip-link target */
+  main:focus-visible {
+    outline: none;
+  }
+
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible {
+    outline-offset: 0;
   }
 
   /* Selection */
   ::selection {
-    background-color: ${({ theme }) => theme.colors.primary};
-    color: white;
+    background-color: ${({ theme }) => theme.colors.accent};
+    color: ${({ theme }) => theme.colors.ink};
   }
 
   /* Scrollbar */
   ::-webkit-scrollbar {
-    width: 10px;
+    width: 12px;
   }
 
   ::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background};
+    background: ${({ theme }) => theme.colors.paper};
+    border-left: ${({ theme }) => theme.borders.thin};
   }
 
   ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary};
-    border-radius: ${({ theme }) => theme.borderRadius.full};
-    
-    &:hover {
-      background: ${({ theme }) => theme.colors.primaryDark};
+    background: ${({ theme }) => theme.colors.ink};
+  }
+
+  /* Respect reduced-motion preferences everywhere */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
     }
   }
 `;

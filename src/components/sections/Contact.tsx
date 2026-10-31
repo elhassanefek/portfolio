@@ -1,783 +1,237 @@
-
-
 import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
-import { Container } from "../common/Container";
-import { Button } from "../common/Button";
-import { fadeInUp } from "../../styles/animations";
+import styled, { css } from "styled-components";
 import emailjs from "@emailjs/browser";
+import { Section } from "../common/Section";
+import { Reveal } from "../common/Reveal";
+import { Button } from "../common/Button";
+import { monoLabel, pressable } from "../../styles/mixins";
+import { profile } from "../../data/profile";
 
-// Toast animation
-const slideIn = keyframes`
-  from { transform: translateY(-20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-`;
+// EmailJS identifiers (the public key is meant to be shipped to the browser).
+const EMAILJS_SERVICE_ID = "service_raxw8wa";
+const EMAILJS_TEMPLATE_ID = "template_t4sc0sq";
+const EMAILJS_PUBLIC_KEY = "ehu0ZYhHwsDyrv7W4";
 
-const fadeOut = keyframes`
-  from { transform: translateY(0); opacity: 1; }
-  to { transform: translateY(-20px); opacity: 0; }
-`;
+type Status = { kind: "idle" } | { kind: "sending" } | { kind: "sent" } | { kind: "error" };
 
-// Toast container
-const ToastContainer = styled.div`
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  pointer-events: none;
-`;
-
-// Toast component
-const Toast = styled.div<{ type: 'success' | 'error' }>`
-  padding: 12px 20px;
-  border-radius: 8px;
-  color: white;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-width: 250px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  pointer-events: auto;
-  animation: ${slideIn} 0.3s ease-out forwards;
-  background: ${({ type }) => type === 'success' ? '#4CAF50' : '#F44336'};
-  border: 2px solid ${({ type }) => type === 'success' ? '#388E3C' : '#D32F2F'};
-  
-  &.exiting {
-    animation: ${fadeOut} 0.3s ease-out forwards;
-  }
-  
-  button {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-    margin-left: 10px;
-    opacity: 0.8;
-    transition: opacity 0.2s;
-    
-    &:hover {
-      opacity: 1;
-    }
-  }
-`;
-
-
-interface ToastMessage {
-  id: number;
-  message: string;
-  type: 'success' | 'error';
-  visible: boolean;
-}
+const channels = [
+  { label: "Email", value: profile.email, href: `mailto:${profile.email}` },
+  { label: "GitHub", value: "github.com/elhassanefek", href: profile.github },
+  { label: "LinkedIn", value: "in/el-hassane-fekairi-2088b0387", href: profile.linkedin },
+];
 
 export const Contact: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<Status>({ kind: "idle" });
 
-  const showToast = (message: string, type: 'success' | 'error') => {
-    const id = Date.now();
-    const duration = type === 'success' ? 3000 : 5000;
-    
-    // Add new toast
-    setToasts(prev => [...prev, { id, message, type, visible: true }]);
-    
-    // Remove toast after duration
-    setTimeout(() => {
-      setToasts(prev => 
-        prev.map(t => 
-          t.id === id ? { ...t, visible: false } : t
-        )
-      );
-      
-      // Remove from DOM after animation
-      setTimeout(() => {
-        setToasts(prev => prev.filter(t => t.id !== id));
-      }, 300);
-    }, duration);
-  };
-  
-  const removeToast = (id: number) => {
-    setToasts(prev => 
-      prev.map(t => 
-        t.id === id ? { ...t, visible: false } : t
-      )
-    );
-    
-    setTimeout(() => {
-      setToasts(prev => prev.filter(t => t.id !== id));
-    }, 300);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-
-   const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setStatus({ kind: "sending" });
     try {
-      const result = await emailjs.send(
-        "service_raxw8wa",    // replace with your EmailJS service ID
-        "template_t4sc0sq",   // replace with your EmailJS template ID
-        {
-    name: formData.name,
-    email: formData.email,
-    message: formData.message,
-  }   ,         // data to send
-        "ehu0ZYhHwsDyrv7W4"     // replace with your EmailJS public key
-      );
-
-      console.log("Message sent:", result.text);
-      showToast("Message sent successfully!", "success");
-      setFormData({ name: "", email: "", message: "" }); // reset form
+      await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, form, EMAILJS_PUBLIC_KEY);
+      setStatus({ kind: "sent" });
+      setForm({ name: "", email: "", message: "" });
     } catch (error) {
       console.error("Error sending message:", error);
-      showToast("Failed to send message. Please try again.", "error");
+      setStatus({ kind: "error" });
     }
   };
- 
 
   return (
-    <>
-      <ToastContainer>
-        {toasts.map(toast => (
-          <Toast 
-            key={toast.id} 
-            type={toast.type}
-            className={!toast.visible ? 'exiting' : ''}
-          >
-            <span>{toast.message}</span>
-            <button onClick={() => removeToast(toast.id)}>×</button>
-          </Toast>
-        ))}
-      </ToastContainer>
-      <ContactSection id="contact">
-      <DecorativeShapes>
-        <Shape1 />
-        <Shape2 />
-        <Shape3 />
-      </DecorativeShapes>
+    <Section
+      id="contact"
+      index={6}
+      label="Contact"
+      title="Get in touch"
+      intro="Internships, backend roles or a question about one of these projects: write to me."
+    >
+      <Grid>
+        <Reveal>
+          <Channels>
+            {channels.map((c) => (
+              <li key={c.label}>
+                <Channel
+                  href={c.href}
+                  {...(c.href.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
+                >
+                  <ChannelLabel>{c.label}</ChannelLabel>
+                  <ChannelValue>{c.value}</ChannelValue>
+                </Channel>
+              </li>
+            ))}
+          </Channels>
+        </Reveal>
 
-      <Container>
-        <SectionHeader>
-          <SectionTitle>LET'S TALK</SectionTitle>
-          <TitleUnderline />
-        </SectionHeader>
+        <Reveal delay={0.1}>
+          <Form onSubmit={handleSubmit} aria-labelledby="contact-form-title">
+            <FormTitle id="contact-form-title">Send a message</FormTitle>
 
-        <ContentWrapper>
-          <TextColumn>
-            <InfoCard>
-              <InfoTitle>Get in Touch</InfoTitle>
-              <ContactText>
-                I'm always interested in hearing about new projects and
-                opportunities. Whether you have a question or just want to say hi,
-                feel free to reach out!
-              </ContactText>
-            </InfoCard>
+            <Field>
+              <Label htmlFor="contact-name">Name</Label>
+              <Input
+                id="contact-name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
+            </Field>
 
-            <ContactInfo>
-              <ContactItem>
-                <ContactLabel>📧 Email</ContactLabel>
-                <ContactLink href="mailto:your.email@example.com">
-                  ne_fekairi@esi.dz
-                </ContactLink>
-              </ContactItem>
-              <ContactItem>
-                <ContactLabel>📍 Location</ContactLabel>
-                <ContactValue>Algiers, Algeria</ContactValue>
-              </ContactItem>
-              <ContactItem>
-                <ContactLabel>🌐 Social</ContactLabel>
-                <SocialLinks>
-                  <SocialLink
-                    href="https://github.com/elhassanefek"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    GitHub
-                  </SocialLink>
-                  <SocialLink
-                    href="https://www.linkedin.com/in/el-hassane-fekairi-2088b0387/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    LinkedIn
-                  </SocialLink>
-                 
-                </SocialLinks>
-              </ContactItem>
-            </ContactInfo>
-          </TextColumn>
+            <Field>
+              <Label htmlFor="contact-email">Email</Label>
+              <Input
+                id="contact-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
+            </Field>
 
-          <FormColumn>
-            <ContactForm onSubmit={handleSubmit}>
-              <FormTitle>Send a Message</FormTitle>
-              
-              <FormGroup>
-                <Label htmlFor="name">Name *</Label>
-                <Input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Your name"
-                  required
-                />
-              </FormGroup>
+            <Field>
+              <Label htmlFor="contact-message">Message</Label>
+              <TextArea
+                id="contact-message"
+                name="message"
+                rows={6}
+                value={form.message}
+                onChange={handleChange}
+                required
+              />
+            </Field>
 
-              <FormGroup>
-                <Label htmlFor="email">Email *</Label>
-                <Input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder="your.email@example.com"
-                  required
-                />
-              </FormGroup>
+            <Button type="submit" size="lg" fullWidth disabled={status.kind === "sending"}>
+              {status.kind === "sending" ? "Sending…" : "Send message"}
+            </Button>
 
-              <FormGroup>
-                <Label htmlFor="message">Message *</Label>
-                <TextArea
-                  id="message"
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Your message..."
-                  rows={6}
-                  required
-                />
-              </FormGroup>
-
-              <Button type="submit" size="lg" fullWidth>
-                Send Message
-              </Button>
-            </ContactForm>
-          </FormColumn>
-        </ContentWrapper>
-      </Container>
-    </ContactSection>
-    </>
+            <StatusLine role="status" aria-live="polite" $kind={status.kind}>
+              {status.kind === "sent" && "Message sent. I'll get back to you soon."}
+              {status.kind === "error" &&
+                `Couldn't send the message. Please try again or email ${profile.email}.`}
+            </StatusLine>
+          </Form>
+        </Reveal>
+      </Grid>
+    </Section>
   );
 };
 
-const ContactSection = styled.section`
-  padding: ${({ theme }) => theme.spacing["5xl"]} 0;
-  background-color: #AEC6FF;
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  box-sizing: border-box;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    padding: ${({ theme }) => theme.spacing["3xl"]} 0;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding: ${({ theme }) => theme.spacing["2xl"]} 0;
-  }
-`;
-
-const DecorativeShapes = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 0;
-`;
-
-const Shape1 = styled.div`
-  position: absolute;
-  top: 15%;
-  right: 10%;
-  width: 100px;
-  height: 100px;
-  background: #FFFACD;
-  border: 5px solid #000;
-  transform: rotate(45deg);
-  box-shadow: 8px 8px 0 #000;
-  animation: float 7s ease-in-out infinite;
-  
-  @keyframes float {
-    0%, 100% { transform: rotate(45deg) translateY(0px); }
-    50% { transform: rotate(45deg) translateY(-20px); }
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    width: 60px;
-    height: 60px;
-    border-width: 3px;
-    box-shadow: 5px 5px 0 #000;
-  }
-`;
-
-const Shape2 = styled.div`
-  position: absolute;
-  bottom: 10%;
-  left: 5%;
-  width: 90px;
-  height: 90px;
-  background: #FFB5E8;
-  border: 5px solid #000;
-  border-radius: 50%;
-  box-shadow: 7px 7px 0 #000;
-  animation: float 6s ease-in-out infinite 1s;
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    width: 55px;
-    height: 55px;
-    border-width: 3px;
-    box-shadow: 4px 4px 0 #000;
-  }
-`;
-
-const Shape3 = styled.div`
-  position: absolute;
-  top: 60%;
-  left: 8%;
-  width: 0;
-  height: 0;
-  border-left: 50px solid transparent;
-  border-right: 50px solid transparent;
-  border-bottom: 87px solid #B4E7CE;
-  filter: drop-shadow(7px 7px 0 #000);
-  animation: float 8s ease-in-out infinite 2s;
-  
-  &::after {
-    content: '';
-    position: absolute;
-    top: 5px;
-    left: -50px;
-    width: 0;
-    height: 0;
-    border-left: 50px solid transparent;
-    border-right: 50px solid transparent;
-    border-bottom: 87px solid #000;
-    z-index: -1;
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    border-left: 30px solid transparent;
-    border-right: 30px solid transparent;
-    border-bottom: 52px solid #B4E7CE;
-    
-    &::after {
-      left: -30px;
-      border-left: 30px solid transparent;
-      border-right: 30px solid transparent;
-      border-bottom: 52px solid #000;
-    }
-  }
-`;
-
-const SectionHeader = styled.div`
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing["3xl"]};
-  position: relative;
-  z-index: 1;
-`;
-
-const SectionTitle = styled.h2`
-  font-size: ${({ theme }) => theme.fontSizes["6xl"]};
-  font-weight: 900;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  display: inline-block;
-  background: #B4E7CE;
-  padding: ${({ theme }) => `${theme.spacing.sm} ${theme.spacing.xl}`};
-  border: 5px solid #000;
-  box-shadow: 8px 8px 0 #000;
-  border-radius: 0;
-  animation: ${fadeInUp} 0.8s ease-out;
-  transition: all 0.3s ease;
-  text-align: center;
-  width: auto;
-  max-width: 100%;
-  box-sizing: border-box;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  
-  &:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 11px 11px 0 #000;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    font-size: ${({ theme }) => theme.fontSizes["4xl"]};
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.lg}`};
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes["3xl"]};
-    border-width: 4px;
-    box-shadow: 6px 6px 0 #000;
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes["2xl"]};
-    border-width: 3px;
-    box-shadow: 4px 4px 0 #000;
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-    margin-bottom: ${({ theme }) => theme.spacing.sm};
-    letter-spacing: 0.5px;
-  }
-`;
-
-const TitleUnderline = styled.div`
-  width: 120px;
-  height: 6px;
-  background: #000;
-  margin: ${({ theme }) => theme.spacing.md} auto 0;
-  border-radius: 0;
-`;
-
-const ContentWrapper = styled.div`
+const Grid = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: ${({ theme }) => theme.spacing["3xl"]};
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 ${({ theme }) => theme.spacing.lg};
-  box-sizing: border-box;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: ${({ theme }) => theme.spacing.xl};
+  align-items: start;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    grid-template-columns: 1fr;
-    gap: ${({ theme }) => theme.spacing.xl};
-    padding: 0 ${({ theme }) => theme.spacing.md};
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding: 0 ${({ theme }) => theme.spacing.sm};
+  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
+    grid-template-columns: minmax(0, 1fr);
     gap: ${({ theme }) => theme.spacing.lg};
   }
 `;
 
-const TextColumn = styled.div`
-  animation: ${fadeInUp} 0.8s ease-out;
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xl};
-`;
-
-const InfoCard = styled.div`
-  background: #FFF;
-  border: 5px solid #000;
-  border-radius: 0;
-  padding: ${({ theme }) => theme.spacing["2xl"]};
-  box-shadow: 10px 10px 0 #000;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-
-  &:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 13px 13px 0 #000;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    padding: ${({ theme }) => theme.spacing.xl};
-    border-width: 4px;
-    box-shadow: 7px 7px 0 #000;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding: ${({ theme }) => theme.spacing.lg};
-    border-width: 3px;
-    box-shadow: 5px 5px 0 #000;
-  }
-`;
-
-const InfoTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes["2xl"]};
-  font-weight: 900;
-  color: #000;
-  text-transform: uppercase;
-  margin-bottom: ${({ theme }) => theme.spacing.md};
-  letter-spacing: 0.5px;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes.xl};
-  }
-`;
-
-const ContactText = styled.p`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  line-height: ${({ theme }) => theme.lineHeights.relaxed};
-  color: #000;
-  font-weight: 500;
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-  }
-`;
-
-const ContactInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.lg};
-`;
-
-const ContactItem = styled.div`
-  background: #FFF;
-  border: 4px solid #000;
-  border-radius: 0;
-  padding: ${({ theme }) => theme.spacing.lg};
-  box-shadow: 6px 6px 0 #000;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 8px 8px 0 #000;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.lg}) {
-    padding: ${({ theme }) => theme.spacing.md};
-    border-width: 3px;
-    box-shadow: 5px 5px 0 #000;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-    border-width: 2px;
-    box-shadow: 3px 3px 0 #000;
-  }
-`;
-
-const ContactLabel = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: #000;
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
-  font-weight: 800;
-`;
-
-const ContactLink = styled.a`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: #000;
-  font-weight: 600;
-  text-decoration: underline;
-  text-decoration-thickness: 2px;
-  text-underline-offset: 3px;
-
-  &:hover {
-    text-decoration-thickness: 3px;
-  }
-`;
-
-const ContactValue = styled.div`
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  color: #000;
-  font-weight: 600;
-`;
-
-const SocialLinks = styled.div`
-  display: flex;
+const Channels = styled.ul`
+  display: grid;
   gap: ${({ theme }) => theme.spacing.sm};
-  flex-wrap: wrap;
 `;
 
-const SocialLink = styled.a`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  color: #000;
-  padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.md}`};
-  background-color: #FFFACD;
-  border: 3px solid #000;
-  border-radius: 0;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 3px 3px 0 #000;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-  text-align: center;
-  flex: 1 0 auto;
-  min-width: 80px;
-  box-sizing: border-box;
-
-  &:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 #000;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes.xs};
-    padding: ${({ theme }) => `${theme.spacing.xs} ${theme.spacing.sm}`};
-    border-width: 2px;
-    min-width: 70px;
-    box-shadow: 2px 2px 0 #000;
-  }
-`;
-
-const FormColumn = styled.div`
-  animation: ${fadeInUp} 0.8s ease-out 0.2s both;
-`;
-
-const ContactForm = styled.form`
+const Channel = styled.a`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.lg};
-  background-color: #FFF;
-  padding: ${({ theme }) => theme.spacing["2xl"]};
-  border-radius: 0;
-  border: 5px solid #000;
-  box-shadow: 10px 10px 0 #000;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  margin-right: -2rem;
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    margin-right: -1.5rem;
-  }
-  
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    margin-right: -1rem;
-  }
+  gap: 4px;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  background-color: ${({ theme }) => theme.colors.surface};
+  border: ${({ theme }) => theme.borders.base};
+  ${pressable("sm")}
 
   &:hover {
-    transform: translate(-3px, -3px);
-    box-shadow: 13px 13px 0 #000;
+    background-color: ${({ theme }) => theme.colors.accent};
   }
+`;
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.md}) {
-    padding: ${({ theme }) => theme.spacing.xl};
-    border-width: 4px;
-    box-shadow: 7px 7px 0 #000;
-  }
+const ChannelLabel = styled.span`
+  ${monoLabel}
+`;
+
+const ChannelValue = styled.span`
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-weight: ${({ theme }) => theme.fontWeights.bold};
+  font-size: ${({ theme }) => theme.fontSizes.lg};
+  overflow-wrap: anywhere;
+`;
+
+const Form = styled.form`
+  display: grid;
+  gap: ${({ theme }) => theme.spacing.md};
+  padding: ${({ theme }) => theme.spacing.lg};
+  background-color: ${({ theme }) => theme.colors.surface};
+  border: ${({ theme }) => theme.borders.base};
+  box-shadow: ${({ theme }) => theme.shadows.md};
 
   @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    padding: ${({ theme }) => theme.spacing.lg};
-    border-width: 3px;
-    box-shadow: 5px 5px 0 #000;
-    gap: ${({ theme }) => theme.spacing.md};
+    padding: ${({ theme }) => theme.spacing.md};
   }
 `;
 
 const FormTitle = styled.h3`
-  font-size: ${({ theme }) => theme.fontSizes.xl};
-  font-weight: 900;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: ${({ theme }) => theme.spacing.sm};
+  margin: 0;
 `;
 
-const FormGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: ${({ theme }) => theme.spacing.xs};
+const Field = styled.div`
+  display: grid;
+  gap: 6px;
 `;
 
 const Label = styled.label`
-  font-size: ${({ theme }) => theme.fontSizes.sm};
-  font-weight: 800;
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  ${monoLabel}
+`;
+
+const fieldStyles = css`
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+  background-color: ${({ theme }) => theme.colors.paper};
+  color: ${({ theme }) => theme.colors.ink};
+  border: ${({ theme }) => theme.borders.base};
+  border-radius: ${({ theme }) => theme.radii.none};
+  line-height: ${({ theme }) => theme.lineHeights.normal};
+
+  &:focus-visible {
+    background-color: ${({ theme }) => theme.colors.surface};
+  }
 `;
 
 const Input = styled.input`
-  padding: ${({ theme }) => theme.spacing.md};
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  border: 3px solid #000;
-  border-radius: 0;
-  background-color: #F5F5F5;
-  color: #000;
-  font-weight: 500;
-  box-shadow: 4px 4px 0 #000;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-
-  &:focus {
-    outline: none;
-    background-color: #FFF;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-  }
-
-  &::placeholder {
-    color: #666;
-    opacity: 1;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-    border-width: 2px;
-    box-shadow: 3px 3px 0 #000;
-  }
+  ${fieldStyles}
+  min-height: 48px;
 `;
 
 const TextArea = styled.textarea`
-  padding: ${({ theme }) => theme.spacing.md};
-  font-size: ${({ theme }) => theme.fontSizes.base};
-  border: 3px solid #000;
-  border-radius: 0;
-  background-color: #F5F5F5;
-  color: #000;
-  font-weight: 500;
+  ${fieldStyles}
   resize: vertical;
-  font-family: inherit;
-  box-shadow: 4px 4px 0 #000;
-  transition: all 0.3s ease;
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 150px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-
-  &:focus {
-    outline: none;
-    background-color: #FFF;
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #000;
-  }
-
-  &::placeholder {
-    color: #666;
-    opacity: 1;
-  }
-
-  @media (max-width: ${({ theme }) => theme.breakpoints.sm}) {
-    font-size: ${({ theme }) => theme.fontSizes.sm};
-    padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
-    border-width: 2px;
-    box-shadow: 3px 3px 0 #000;
-    min-height: 120px;
-  }
 `;
+
+const StatusLine = styled.p<{ $kind: Status["kind"] }>`
+  ${monoLabel}
+  margin: 0;
+  text-transform: none;
+  font-size: ${({ theme }) => theme.fontSizes.sm};
+
+  ${({ $kind, theme }) =>
+    ($kind === "sent" || $kind === "error") &&
+    css`
+      padding: ${theme.spacing.xs} ${theme.spacing.sm};
+      border: ${theme.borders.base};
+      background-color: ${$kind === "sent" ? theme.colors.status.success : theme.colors.status.danger};
+      color: ${theme.colors.ink};
+    `}
+`;
+
+export default Contact;

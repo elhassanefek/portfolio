@@ -1,82 +1,45 @@
-export interface SkillCategory {
-  category: string;
-  skills: string[];
+// src/data/skills.ts
+//
+// Grouped exactly as on the resume. Rendered as tags, no levels or logos.
+
+export interface SkillGroup {
+  title: string;
+  items: string[];
 }
 
-export const skillsData: SkillCategory[] = [
+export const skillGroups: SkillGroup[] = [
   {
-    category: "Frontend",
-    skills: [
-      "React",
-      "TypeScript",
-      "JavaScript (ES6+)",
-      "HTML5",
-      "CSS",
-      "Styled Components",
-      "TanStack Query",
-      
-      "Redux",
-       "Tailwind",
-      "GSAP",
-     
-      "Vite",
+    title: "Languages",
+    items: ["Go", "TypeScript", "JavaScript", "SQL", "Python", "C", "C++"],
+  },
+  {
+    title: "Backend",
+    items: [
+      "Go (chi, pgx, Bun ORM)", "Node.js", "Express", "FastAPI", "Flask",
+      "REST APIs", "Concurrency control", "Idempotency", "Transactional outbox",
+      "Job queues", "HMAC webhooks", "JWT & RBAC", "Multi-tenancy",
     ],
   },
   {
-    category: "Backend",
-    skills: [
-      "Node.js",
-      "Flask",
-      "Express.js",
-      "FastAPI",
-     
-      "MongoDB",
-      "Mongoose",
-      "JWT",
-      "Socket.IO" 
+    title: "Data & Storage",
+    items: ["PostgreSQL", "MySQL", "SQLite", "MongoDB", "Supabase", "Firebase", "MinIO (S3)"],
+  },
+  {
+    title: "Frontend & Mobile",
+    items: ["React", "Next.js", "React Native", "Expo", "TanStack Query", "i18next"],
+  },
+  {
+    title: "Testing & DevOps",
+    items: [
+      "Testcontainers", "Go race detector", "pytest", "Jest", "Docker",
+      "Docker Compose", "GitHub Actions", "Prometheus", "golangci-lint", "Git",
     ],
   },
   {
-    category: "Machine Learning / AI",
-    skills: [
-      "Python",
-      "Scikit-learn",
-      "Pandas",
-      "NumPy",
- 
-      "NLP (RoBERTa, Hugging Face Transformers)",
-    
-      "Docker (Containerization)",
-     
-      "Model Deployment (FastAPI / Local / Cloud)",
-    ],
-  },
-  {
-    category: "DevOps & Tools",
-    skills: [
-      "Git & GitHub",
-      "Docker",
-      "Postman",
-     
-      "Figma",
-      "npm",
-      
-    
-      "JSON Server (Mock APIs)",
-    ],
-  },
-  {
-    category: "Project Management & Architecture",
-    skills: [
-      "Clean Architecture",
-      "API Documentation (OpenAPI / Swagger)",
-      "Async Programming",
-      "WebSockets",
-      "Task & Project Management Systems",
-      "System Design Basics",
-      "Service–Repository Pattern",
-      "Error Handling & Validation",
-      "RESTful APIs",
+    title: "AI / ML",
+    items: [
+      "PyTorch", "Hugging Face Transformers (CamemBERT, RoBERTa)",
+      "scikit-learn", "pandas", "TensorFlow",
     ],
   },
 ];

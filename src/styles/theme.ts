@@ -1,35 +1,48 @@
+// Technical brutalism design tokens. Components must read every color,
+// font, border, radius and shadow from here — no hardcoded values elsewhere.
+
+const ink = "#111111";
+
 export const theme = {
   colors: {
-    // Primary switched to mint/teal to remove orange from the UI
-    primary: "#31C7B1",
-    primaryDark: "#26A896",
-    primaryLight: "#7FE1D3",
+    paper: "#F4F1EA", // page background
+    surface: "#FFFFFF", // cards
+    ink, // text, borders, shadows
+    muted: "#5A5A5A", // metadata
+    accent: "#31C7B1", // site accent (mint)
 
-    background: "#FFF8E6", // warm cream
-    backgroundAlt: "#FFFFFF",
+    // Faint grid-paper lines drawn over the paper background
+    grid: "rgba(17, 17, 17, 0.06)",
 
-    text: "#111111",
-    textLight: "#3D3D3D",
-    textMuted: "#6F6F6F",
-
-    accent: {
-      pink: "#FCA5A5",
-      blue: "#93C5FD",
-      peach: "#FCD5CE",
-      yellow: "#FFE75E",
-      mint: "#A7F3D0",
+    // Per-project accents (text on these fills is always ink)
+    project: {
+      transacta: "#F7AE85", // apricot
+      nounoudz: "#998BBF", // lavender from the NounouDZ logo
+      camembert: "#4D7CFE",
+      gdgEvents: "#2BB673",
     },
 
-    border: "#111111",
-    shadow: "rgba(0, 0, 0, 1)",
+    // Soft tints reused by archive projects and secondary fills
+    tint: {
+      mint: "#C9F0E9",
+      yellow: "#FFF1B8",
+      coral: "#FFD9CF",
+      blue: "#D6E1FF",
+      green: "#CDEFD9",
+      lilac: "#E7DDF8",
+    },
+
+    // Feedback fills; both keep AA contrast with ink text
+    status: {
+      success: "#2BB673",
+      danger: "#FF6B4A",
+    },
   },
 
   fonts: {
-    headingSerif: "'Playfair Display', serif",
-    headingSans: "'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif",
-    heading: "'Playfair Display', serif",
-    body: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-    mono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
+    heading: "'Space Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    body: "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    mono: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
   },
 
   fontSizes: {
@@ -46,20 +59,18 @@ export const theme = {
     "7xl": "4.5rem", // 72px
   },
 
+  // Only weights loaded from Google Fonts in index.html
   fontWeights: {
-    light: 300,
     normal: 400,
     medium: 500,
     semibold: 600,
     bold: 700,
-    extrabold: 800,
   },
 
   lineHeights: {
-    tight: 1.2,
+    tight: 1.15,
     normal: 1.5,
-    relaxed: 1.75,
-    loose: 2,
+    relaxed: 1.7,
   },
 
   spacing: {
@@ -82,29 +93,44 @@ export const theme = {
     "2xl": "1536px",
   },
 
-  borderRadius: {
-    sm: "4px",
-    md: "10px",
-    lg: "14px",
-    xl: "18px",
-    "2xl": "24px",
-    full: "9999px",
+  borders: {
+    width: "3px",
+    base: `3px solid ${ink}`,
+    thin: `2px solid ${ink}`,
   },
 
+  // Square corners; `sm` is only for small tags
+  radii: {
+    none: "0",
+    sm: "2px",
+  },
+
+  // Hard offset shadows, never blurred
   shadows: {
-    // Hard offset shadows for neobrutalism
-    sm: "3px 3px 0 0 #111111",
-    base: "4px 4px 0 0 #111111",
-    md: "6px 6px 0 0 #111111",
-    lg: "8px 8px 0 0 #111111",
-    xl: "10px 10px 0 0 #111111",
-    "2xl": "12px 12px 0 0 #111111",
+    none: `0 0 0 0 ${ink}`,
+    sm: `4px 4px 0 0 ${ink}`, // small elements
+    md: `8px 8px 0 0 ${ink}`, // cards
+  },
+
+  // Distance an element travels toward its shadow on press
+  press: {
+    sm: "4px",
+    md: "8px",
+  },
+
+  focus: {
+    outline: `3px solid ${ink}`,
+    offset: "3px",
+  },
+
+  layout: {
+    headerHeight: "64px",
   },
 
   transitions: {
-    fast: "150ms ease-in-out",
-    base: "300ms ease-in-out",
-    slow: "500ms ease-in-out",
+    fast: "120ms ease-out",
+    base: "200ms ease-out",
+    slow: "400ms ease-out",
   },
 
   zIndex: {
@@ -117,5 +143,16 @@ export const theme = {
     tooltip: 600,
   },
 } as const;
+
+export type AppTheme = typeof theme;
+export type TintKey = keyof AppTheme["colors"]["tint"];
+export type ProjectAccentKey = keyof AppTheme["colors"]["project"];
+/** A project's accent: one of the per-project colors or an archive tint. */
+export type AccentKey = ProjectAccentKey | TintKey;
+
+export const accentColor = (t: AppTheme, key: AccentKey): string =>
+  key in t.colors.project
+    ? t.colors.project[key as ProjectAccentKey]
+    : t.colors.tint[key as TintKey];
 
 export default theme;

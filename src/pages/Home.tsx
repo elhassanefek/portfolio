@@ -1,35 +1,24 @@
 import React from "react";
-
-
 import { Hero } from "../components/sections/Hero";
 import { About } from "../components/sections/About";
-import { Projects } from "../components/sections/Projects";
-import { ProjectStories } from "../components/sections/ProjectStories";
+import { Experience } from "../components/sections/Experience";
+import { Archive, Projects } from "../components/sections/Projects";
 import { Skills } from "../components/sections/Skills";
 import { Contact } from "../components/sections/Contact";
-import { Header } from "../components/layout/Header";
-
+import { useDocumentTitle } from "../lib/useDocumentTitle";
 
 export const Home: React.FC = () => {
+  useDocumentTitle();
+
   return (
     <>
-      <Header />
-      
-        <Hero />
-        
-        <About />
-      
-        <Projects />
-       
-        <Skills />
-      
-        <ProjectStories />
-      
-
-        <Contact />
-      
-     
+      <Hero />
+      <About />
+      <Experience />
+      <Projects />
+      <Archive />
+      <Skills />
+      <Contact />
     </>
   );
 };
-

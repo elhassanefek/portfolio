@@ -1,34 +1,296 @@
 // src/data/projects.ts
+//
+// Single source of truth for every project. Routes are /projects/:slug, and
+// each slug is also the screenshots folder name (src/assets/screenshots/<slug>/).
+
+import type { AccentKey } from "../styles/theme";
+
+/** Keys of the architecture diagram components (src/components/diagrams/). */
+export type DiagramKey = "transacta" | "nounoudz" | "camembert";
+
+export interface Decision {
+  title: string;
+  why: string;
+  tradeoff?: string;
+}
 
 export interface Project {
-  id: string;
+  slug: string;
   title: string;
-  description: string;
-  story: string;
-  challenges: string[];
-  features: string[];
-  gallery?: string[];
-  tags: string[];
-  image?: string;
-  link?: string;
-  github?: string;
-  color: string;
+  tagline: string;
+  featured: boolean;
+  status?: string;
+  role?: string;
+  stack: string[];
+  accent: AccentKey;
+  /**
+   * How the cover image fills its 16:10 frame. "cover" (default) crops to fill;
+   * "contain" shows the whole image, centered on the surface with padding.
+   */
+  coverFit?: "cover" | "contain";
+  links: { github?: string; live?: string };
+  credits?: string;
+
+  /** Archive pages (and screenshot-led featured pages): short description + features. */
+  summary?: string;
+  features?: string[];
+
+  /** Case studies (featured projects). */
+  problem?: string;
+  architecture?: DiagramKey;
+  decisions?: Decision[];
+  testing?: string[];
+  results?: string[];
+  /** Engineering practices worth calling out separately from tests. */
+  engineering?: string[];
+  next?: string[];
 }
 
 export const projects: Project[] = [
+  // ───────────────────────── Featured ─────────────────────────
   {
-    id: "1",
-    title: "Project Management API",
-    description:
-      "A scalable backend for managing workspaces, projects, and tasks with real-time collaboration powered by Socket.IO. Features include JWT authentication, clean repository–service architecture, and event-driven updates.",
-    story:
-      "This project started from my curiosity about how tools like Notion or Jira handle collaboration behind the scenes. I wanted to build my own scalable system where teams could manage workspaces and tasks with real-time updates. What began as a simple CRUD API grew into a structured, event-driven backend powered by Socket.IO and a clean service–repository architecture. It taught me how to design APIs that are both maintainable and scalable, while supporting live user interactions.",
-    challenges: [
-      "Designing a scalable data model for nested workspaces, projects, and tasks.",
-      "Implementing real-time task updates using Socket.IO.",
-      "Maintaining clean architecture with repository and service layers.",
-      "Ensuring secure authentication and authorization with JWT.",
+    slug: "transacta",
+    title: "Transacta",
+    tagline: "Multi-tenant double-entry ledger API",
+    featured: true,
+    status: "Backend API; runs locally with Docker Compose. Not deployed.",
+    role: "Solo project",
+    stack: [
+      "Go",
+      "PostgreSQL",
+      "chi",
+      "pgx",
+      "JWT",
+      "Prometheus",
+      "Docker",
+      "Testcontainers",
+      "GitHub Actions",
     ],
+    accent: "transacta",
+    links: { github: "https://github.com/elhassanefek/transacta" },
+    problem:
+      "Products that move value (payments, credits, inventory) need atomic, auditable transfers that stay correct under concurrent requests, client retries and crashes.",
+    architecture: "transacta",
+    decisions: [
+      {
+        title: "Pessimistic sorted row locks at READ COMMITTED",
+        why: "Chosen over SERIALIZABLE: no retry loops, and a fixed lock order removes deadlocks.",
+        tradeoff: "Hot accounts serialize.",
+      },
+      {
+        title: "Balances derived from entries, not stored",
+        why: "One source of truth.",
+        tradeoff: "The SUM grows with history.",
+      },
+      {
+        title: "Idempotency with a 30s processing lease and a fencing token",
+        why: "A stale server finishing late can't overwrite a newer result. This came from a real bug found and fixed. Responses are stored as TEXT for byte-exact replay.",
+      },
+      {
+        title: "Transactional outbox + Postgres job queue",
+        why: "No dual-write problem and no extra infrastructure.",
+        tradeoff: "At-least-once delivery, up to 5s polling latency.",
+      },
+      {
+        title: "tenant_id in every query instead of Postgres RLS",
+        why: "Every query filters by tenant_id, and a cross-tenant ID returns the same not-found as a missing one, so there's no existence oracle.",
+        tradeoff:
+          "Enforced by convention: no row-level security backstop if a query forgets the filter.",
+      },
+    ],
+    testing: [
+      "About 95 test functions, including 29 integration tests on real PostgreSQL via Testcontainers.",
+      '"Exactly one winner" race tests: concurrent idempotency claims, refresh-token rotation, webhook claims, pending-transaction posting.',
+      "A concurrent transfer test asserting money is conserved.",
+      "CI: lint, race-detector tests, Docker build.",
+    ],
+    results: [
+      "Atomic N-leg transfers and two-phase pending → posted/failed transactions.",
+      "Refresh-token rotation with reuse detection that revokes the whole session family.",
+      "Per-tenant RBAC; audit log; Prometheus metrics; 4 Architecture Decision Records.",
+    ],
+    next: [
+      'A reaper for webhook events stuck in "processing" after a crash.',
+      "Reserve funds for pending transactions.",
+      "Don't cache 5xx responses in idempotency.",
+      "Rate limiting; a public demo deployment.",
+    ],
+  },
+  {
+    slug: "nounoudz",
+    title: "NounouDZ",
+    tagline: "Childcare marketplace for Algeria",
+    featured: true,
+    status:
+      "MVP in development; runs end to end locally (Docker Compose + Android emulator). Not deployed.",
+    role: "Solo project (backend and mobile app)",
+    stack: [
+      "Go",
+      "chi",
+      "Bun ORM",
+      "PostgreSQL",
+      "MinIO (S3)",
+      "React Native",
+      "Expo",
+      "TypeScript",
+      "TanStack Query",
+      "i18next",
+      "Docker",
+      "Testcontainers",
+      "GitHub Actions",
+    ],
+    accent: "nounoudz",
+    // The cover is the logo with its tagline at the bottom; don't crop it.
+    coverFit: "contain",
+    // TODO(elhassane): repo is not public yet; add the GitHub link when it is.
+    links: {},
+    problem:
+      "Parents need a trustworthy babysitter and clear agreed terms; babysitters need protection from conflicting commitments.",
+    architecture: "nounoudz",
+    decisions: [
+      {
+        title: "Double-booking prevented by a GiST exclusion constraint",
+        why: "PostgreSQL rejects overlapping time ranges itself, rather than relying on application checks.",
+        tradeoff:
+          "Tied to PostgreSQL (btree_gist), and conflicts only surface at confirmation time as a 409.",
+      },
+      {
+        title: "Sessions exist only after dual confirmation",
+        why: "Open negotiations reserve nothing.",
+        tradeoff: "Conflicts surface at confirm time.",
+      },
+      {
+        title: "Immutable, versioned agreements",
+        why: "Confirmation uses the version's own stored terms.",
+        tradeoff: "More rows and a more complex read model.",
+      },
+      {
+        title: "Transactional outbox in Postgres instead of a broker",
+        why: "Retries, dead-letter state and stale-lock recovery. The stale-lock recovery was added after a real incident.",
+        tradeoff:
+          "At-least-once delivery, up to 2s polling latency, and the database doubles as the queue.",
+      },
+      {
+        title: "Idempotency-key middleware",
+        why: "Stores the response inside the business transaction.",
+        tradeoff:
+          "Fail-open: if the claim insert itself errors, the request still runs.",
+      },
+      {
+        title: "Polling instead of WebSockets for the MVP",
+        why: "Real-time transport was out of MVP scope in the spec; polling only runs while a screen is open (messages 4s, engagement 8s, lists 15s).",
+        tradeoff: "Higher latency and more requests than push.",
+      },
+    ],
+    testing: [
+      "263 backend test functions running against containerized PostgreSQL.",
+      "Concurrent goroutine race tests released by a WaitGroup barrier: exactly one of two overlapping confirmations wins.",
+      "13 Jest suites on mobile.",
+      "5-job GitHub Actions CI.",
+    ],
+    results: [
+      "Trilingual app (French, English, Arabic).",
+      "Phone/OTP auth with rotating refresh tokens.",
+      "Staged privacy of children's medical information: aggregate during negotiation, full detail only after confirmation.",
+    ],
+    next: [
+      "Deploy.",
+      "Match the constraint error by SQLSTATE instead of the message string.",
+      "De-duplicate notifications.",
+      "Admin and verification UI.",
+    ],
+  },
+  {
+    slug: "camembert-feedback",
+    title: "CamemBERT Feedback Classifier",
+    tagline: "Student feedback classification (LMCS Lab, ESI)",
+    featured: true,
+    status: "Completed research project (2026)",
+    role: "Co-developer",
+    credits:
+      "Co-developed with Samer Kamouche in an internship at the LMCS lab (EIAH team), ESI.",
+    stack: [
+      "Python",
+      "PyTorch",
+      "Hugging Face Transformers",
+      "scikit-learn",
+      "pandas",
+      "pydantic",
+      "pytest",
+      "Kaggle (T4 GPU)",
+    ],
+    accent: "camembert",
+    // TODO(elhassane): GitHub link, if the repo can be public.
+    links: {},
+    problem:
+      'Earlier ESI work used TF-IDF + SVM/KNN/MLP, which fails on rare classes: "accomplishment" is 2.8% of comments and neutral opinion 2.4%.',
+    architecture: "camembert",
+    decisions: [
+      {
+        title: "Leak-free splits",
+        why: "Duplicate groups always stay in one partition. Before this, near-identical comments were leaking from train into test.",
+      },
+      {
+        title: "Loss weights computed on the training split only",
+        why: "Validation and test data never influence training.",
+      },
+      {
+        title: "Decision threshold tuned on validation",
+        why: "A grid of 17 values on the validation set (0.65 picked); the test set is used once.",
+      },
+      {
+        title: "Comparisons kept in three separate groups",
+        why: "Retrained baselines, replayed old models and historical published results are never merged.",
+      },
+    ],
+    results: [
+      "Motivation (multi-label: intrinsic, utility, accomplishment, cost): Macro-F1 0.620 → 0.764, vs 0.700 for the best classical baseline (TF-IDF + SVC).",
+      "Accomplishment F1 went 0.154 → 0.786.",
+      "Opinion (3-class): Macro-F1 0.807 with weighted cross-entropy; it found 7 of the 11 neutral test comments.",
+    ],
+    testing: ["110 pytest tests in 27 files."],
+    engineering: [
+      "Installable Python package with YAML configs.",
+      "Every run logged: config, history, metrics, predictions, environment.",
+    ],
+    next: [
+      "Multiple seeds/splits to measure variance.",
+      "Per-label thresholds.",
+      "Compare against FlauBERT.",
+    ],
+  },
+  {
+    slug: "gdg-events",
+    title: "GDG Events Platform",
+    tagline: "Admin & organizer dashboards",
+    featured: true,
+    // TODO(elhassane): status, and whether the platform is live.
+    role: "Frontend: admin dashboard, organizer dashboard, meal-management module",
+    stack: ["React", "TypeScript", "shadcn/ui"],
+    accent: "gdgEvents",
+    // TODO(elhassane): GitHub and/or live links.
+    links: {},
+    summary:
+      "An all-in-one event management platform used to run GDG events end to end.",
+    features: [
+      "The admin dashboard: event oversight and logistics.",
+      "The organizer dashboard: assigned tasks, sessions, announcements.",
+      "The meal-management module: configure meals per event, track participant check-ins and attendance in real time.",
+    ],
+  },
+
+  // ───────────────────────── Archive ─────────────────────────
+  {
+    slug: "project-management-api",
+    title: "Project Management API",
+    tagline: "Workspaces, projects and tasks with real-time updates",
+    featured: false,
+    // TODO(elhassane): status and role.
+    stack: ["Node.js", "Express", "MongoDB", "Socket.IO", "JWT", "Jest"],
+    accent: "mint",
+    links: { github: "https://github.com/elhassanefek/projectify" },
+    summary:
+      "A backend for managing workspaces, projects and tasks, with real-time collaboration over Socket.IO. It uses JWT authentication and a repository–service architecture.",
     features: [
       "Workspace and project management system.",
       "Real-time task collaboration using Socket.IO.",
@@ -36,25 +298,19 @@ export const projects: Project[] = [
       "Modular service–repository architecture for maintainability.",
       "Event-driven updates and efficient database queries.",
     ],
-    gallery: ["/illustrations/projectify2.png"],
-    tags: ["Node.js", "Express", "MongoDB", "Socket.IO", "JWT"],
-    color: "#E5F4F3",
-    image: "/illustrations/projectify.png",
-    github: "https://github.com/elhassane-fekairi/project-management-api",
   },
   {
-    id: "2",
+    slug: "sentiment-analysis",
     title: "Real-time Sentiment Analysis System",
-    description:
-      "An interactive sentiment analysis dashboard for social and manual text input, powered by RoBERTa and Hugging Face models. Built with Flask and React (TypeScript), featuring live analytics and streaming-ready architecture.",
-    story:
-      "This project came from my fascination with Natural Language Processing and real-time emotion tracking. I wanted to build something that could interpret and visualize emotions as they happen — not afterward. With Flask powering the backend and both RoBERTa and Hugging Face models handling sentiment inference, I developed a streaming-ready dashboard capable of analyzing live and manual text input in real time. React and TypeScript brought it all together with an interactive, data-driven interface. It became the perfect intersection of NLP, visualization, and full-stack engineering.",
-    challenges: [
-      "Integrating multiple NLP models (RoBERTa and Hugging Face transformers) for consistent predictions.",
-      "Handling real-time data streams efficiently with Flask and async endpoints.",
-      "Optimizing inference latency while maintaining model accuracy.",
-      "Designing dynamic frontend charts that update seamlessly as new data arrives.",
-    ],
+    tagline: "Live sentiment dashboard powered by RoBERTa",
+    featured: false,
+    // TODO(elhassane): status and role.
+    stack: ["React", "TypeScript", "Flask", "RoBERTa", "Hugging Face"],
+    accent: "coral",
+    // TODO(elhassane): GitHub link (the old link pointed to a GitHub account that does not exist).
+    links: {},
+    summary:
+      "A sentiment analysis dashboard for live and manually entered text, using RoBERTa through Hugging Face. A Flask backend serves the models and a React + TypeScript frontend charts sentiment trends as results arrive.",
     features: [
       "Dual-model sentiment analysis using RoBERTa and Hugging Face pipelines.",
       "Flask-based backend with asynchronous endpoints for live updates.",
@@ -62,55 +318,45 @@ export const projects: Project[] = [
       "Real-time text analysis for both manual input and social media data streams.",
       "TypeScript-based React frontend with reusable data visualization components.",
     ],
-    gallery: [ ],
-    tags: ["React", "TypeScript", "Flask", "RoBERTa", "Hugging Face", "NLP", "Streaming"],
-    color: "#FFE5E5",
-    image: "/illustrations/sentiment3.png",
-    github: "https://github.com/elhassane-fekairi/sentiment-dashboard",
   },
   {
-    id: "3",
+    slug: "ecommerce",
     title: "E-Commerce Platform",
-    description:
-      "A full-stack multi-store e-commerce application with product management, role-based dashboards, order tracking, and cart functionality. Built using React, Node.js, and MongoDB.",
-    story:
-      "This project was one of my most challenging and rewarding experiences. I wanted to understand what it takes to build a real-world e-commerce platform from the ground up — with stores, dashboards, and complete order management. Through this, I learned to manage global state with Context API, integrate React Query for data synchronization, and design clean, modular APIs in Node.js. It taught me how complex systems come together to deliver a simple shopping experience.",
-    challenges: [
-      "Designing a multi-store architecture with shared components.",
-      "Implementing dynamic dashboards for both sellers and customers.",
-      "Handling authentication, cart persistence, and order states.",
-      "Synchronizing data efficiently with React Query.",
-    ],
+    tagline: "Multi-role React frontend for a multi-store shop",
+    featured: false,
+    // TODO(elhassane): status.
+    role: "Frontend",
+    stack: ["React", "React Query", "Context API"],
+    accent: "blue",
+    links: {
+      github: "https://github.com/elhassanefek/multi-role-ecommerce-platform",
+    },
+    summary:
+      "A multi-role e-commerce frontend built with React and React Query, with separate dashboards for admins, sellers and customers. It covers product management, the cart and order tracking.",
     features: [
       "Role-based dashboards (admin, seller, customer).",
       "Product management and inventory tracking.",
       "Order tracking and payment handling (COD + future online).",
       "Context API and React Query for state and data management.",
-      "Scalable Node.js + MongoDB backend with modular routes.",
     ],
-    gallery: [
-      "/illustrations/ecommerce1.png",
-      "/illustrations/ecommerce2.png",
-      "/illustrations/ecommerce3.png",
-    ],
-    tags: ["React", "Node.js", "MongoDB", "Context API", "React Query"],
-    image: "/illustrations/ecommerce.png",
-    color: "#FFE8DB",
-    github: "https://github.com/elhassanefek/multi-role-ecommerce-platform",
   },
   {
-    id: "4",
-    title: "CPU Architecture Visualization",
-    description:
-      "An interactive e-learning project that visually demonstrates CPU operations and architecture concepts using GSAP animations. Designed to simplify how computer architecture works through animated storytelling.",
-    story:
-      "This project began as an attempt to make computer architecture less abstract and more visual. I wanted to show how a CPU actually works — how instructions move, how registers interact, how data flows. Using React and GSAP, I turned complex processes into smooth animations that students can follow visually. Beyond visualization, I also worked on the e-learning side — adding interactive quizzes for students to test their understanding and a documentation section to guide them through each concept. It became a creative blend of engineering, animation, and education.",
-    challenges: [
-      "Creating complex animations that accurately represent CPU operations.",
-      "Synchronizing animations with educational explanations.",
-      "Designing quizzes that adapt to user understanding.",
-      "Building documentation and structured learning flow.",
-    ],
+    slug: "calm-15",
+    title: "Calm 15",
+    tagline: "CPU architecture visualization for e-learning",
+    featured: false,
+    status: "Live",
+    // TODO(elhassane): your role on the team.
+    stack: ["React", "GSAP", "JavaScript"],
+    accent: "lilac",
+    links: {
+      live: "https://calm-15.vercel.app/",
+      github: "https://github.com/ounnane-abdelhak/calm-15",
+    },
+    // TODO(elhassane): teammates' names.
+    credits: "Team project.",
+    summary:
+      "An interactive e-learning project that shows how a CPU executes instructions through GSAP animations. Each module comes with guided documentation and quizzes.",
     features: [
       "GSAP-powered animations for instruction cycles and data flow.",
       "Interactive quizzes to reinforce learning.",
@@ -118,118 +364,33 @@ export const projects: Project[] = [
       "Custom UI for step-by-step CPU operation visualization.",
       "Optimized performance for smooth playback and transitions.",
     ],
-    gallery: ["/illustrations/calm1.png" , "/illustrations/calm.png" , "/illustrations/calm3.png"],
-    tags: ["React", "GSAP", "JavaScript", "Animation", "E-Learning"],
-    image: "/illustrations/calm.png",
-    color: "#E8E5FF",
-    github: "https://github.com/ounnane-abdelhak/calm-15",
-  },
-   {
-     id: "5",
-     title: "Green Spaces Management Application",
-     description:
-       "A web platform that helps communities manage and monitor urban green spaces by tracking planting areas, trash cans, and other urban infrastructure through an interactive map.",
-     story:
-       "This project was inspired by the growing need to manage urban green spaces efficiently. I aimed to create a tool that empowers local authorities and communities to track and improve the condition of parks, planting zones, and public spaces. Using React and Leaflet.js, I built an intuitive mapping interface that allows users to view, categorize, and edit various urban locations in real time, supported by a secure authentication system.",
-     challenges: [
-       "Integrating Leaflet.js for interactive map management.",
-       "Implementing location CRUD operations with React state management.",
-       "Ensuring a smooth and responsive map interaction experience.",
-       "Designing a simple but effective authentication system.",
-     ],
-     features: [
-       "Interactive map with categorized markers for locations.",
-       "Add, edit, and delete location points in real time.",
-       "User authentication for protected routes and features.",
-       "Responsive, accessible design for mobile and desktop.",
-       "Geolocation support for finding and marking user positions.",
-     ],
-     gallery: ["/illustrations/planting.png" , "/illustrations/planting2.png"],
-     tags: ["React", "Leaflet.js", "Context API", "Vite", "CSS Modules"],
-     color: "#E9F7EF",
-     image: "/illustrations/planting.png",
-     github: "https://github.com/elhassane-fekairi/green-spaces-management",
-   },
-   {
-     id: "6",
-     title: "Fast Pizza",
-     description:
-       "A responsive pizza ordering web app that allows users to browse an online menu, add pizzas to a shopping cart, and place orders through an interactive checkout form.",
-     story:
-       "This project was built to explore building smooth, modern user experiences with React while practicing state management and form handling. I wanted to recreate a realistic food ordering flow — from viewing an online menu to adding pizzas to the cart and submitting an order. The result is a clean, fast, and responsive single-page app that mimics a real online pizzeria ordering experience.",
-     challenges: [
-       "Designing a dynamic shopping cart system with React state management.",
-       "Building a form-based ordering flow with validation and responsive UI.",
-       "Maintaining cart persistence between routes using Context API.",
-       "Ensuring a seamless experience across all device sizes.",
-     ],
-     features: [
-       "Online pizza menu with detailed product cards.",
-       "Add-to-cart and remove-from-cart functionality with live total updates.",
-       "Interactive checkout form for placing orders.",
-       "Responsive design optimized for mobile and desktop users.",
-       "Clean component structure using React Router and Context API.",
-     ],
-     gallery: ["/illustrations/pizza.png" ,"/illustrations/pizza2.png"],
-     tags: ["React", "Context API", "React Router", "Tailwind CSS", "Vite"],
-     color: "#FFF4E0",
-     image: "/illustrations/pizza.png",
-     github: "https://github.com/elhassane-fekairi/fast-pizza",
-   },
-   {
-     id: "7",
-     title: "Personal Portfolio Website",
-     description:
-       "A modern, animated, and fully responsive portfolio website designed to showcase my projects, skills, and background as a developer passionate about backend systems, AI, and frontend design.",
-     story:
-       "This project was built to represent who I am as a developer — combining clean design, fluid animations, and technical depth. I focused on making it both visually appealing and functionally solid. Using React and styled-components, I created a modular architecture with reusable components, smooth scroll-based navigation, and subtle motion effects powered by Framer Motion. The portfolio also highlights my most meaningful projects and includes interactive links for visitors to explore my work.",
-     challenges: [
-       "Designing a portfolio that balances aesthetics and performance.",
-       "Implementing smooth animations using Framer Motion without layout shifts.",
-       "Building reusable and well-structured UI components.",
-       "Ensuring accessibility and responsiveness across all devices.",
-     ],
-     features: [
-       "Dynamic project showcase with detailed descriptions and external links.",
-       "Framer Motion animations for smooth transitions and section reveals.",
-       "Scroll-based navigation and interactive menu highlighting active sections.",
-       "Responsive design optimized for all screen sizes.",
-       "Styled-components for maintainable and theme-friendly design.",
-     ],
-     gallery: [],
-     tags: ["React", "TypeScript", "Styled-Components", "Framer Motion", "Vite"],
-     color: "#E3F2FD",
-     image: "/illustrations/portfolio.png",
-     github: "https://github.com/elhassane-fekairi/portfolio",
-     link: "https://fekairielhassane.vercel.app",
   },
   {
-  id: "8",
-  title: "WildOasis – Cabin Booking Platform",
-  description:
-    "A full-stack web application built with Next.js that allows users to browse and book cabins while providing administrators with a dashboard to manage bookings, cabins, and users efficiently.",
-  story:
-    "WildOasis was developed as part of Jonas Schmedtmann's Ultimate React Course. The project focuses on creating a polished, real-world application that handles both customer-facing booking experiences and admin operations. I implemented authentication with NextAuth.js, integrated Supabase for backend database management, and added Stripe for secure payments. Tailwind CSS ensured responsive design across devices, and the app features dynamic cabin listings and real-time booking updates.",
-  challenges: [
-    "Implementing secure authentication with NextAuth.js and Google sign-in.",
-    "Managing real-time booking data with Supabase and ensuring data consistency.",
-    "Integrating Stripe payments for smooth and secure transactions.",
-    "Building a fully responsive design with Tailwind CSS for both customer and admin interfaces.",
-    "Structuring a full-stack Next.js application with clean architecture."
-  ],
-  features: [
-    "Customer-facing cabin search and booking system.",
-    "Admin dashboard to manage cabins, bookings, and user accounts.",
-    "Secure authentication using NextAuth.js with Google sign-in.",
-    "Stripe payment integration for seamless transactions.",
-    "Responsive design with Tailwind CSS for all devices."
-  ],
-  gallery: ["/illustrations/holteli1.png" ,  "/illustrations/hoteli2.png" , "/illustrations/hoteli4.png"],
-  tags: ["Next.js", "React", "Tailwind CSS", "Supabase", "Stripe", "NextAuth.js"],
-  color: "#DFF6FF",
-  image: "/illustrations/hoteli.png",
-  github: "https://github.com/Ahmedabdelaziz77/the-wild-oasis-website",
-  link: "https://the-wild-oasis-website.vercel.app",
-}
-
+    slug: "green-spaces",
+    title: "Green Spaces Management Application",
+    tagline: "Map-based tracking of urban green spaces",
+    featured: false,
+    // TODO(elhassane): status and role.
+    stack: ["React", "Leaflet.js", "Context API", "Vite", "CSS Modules"],
+    accent: "green",
+    // TODO(elhassane): GitHub link (the old link pointed to a GitHub account that does not exist).
+    links: {},
+    summary:
+      "A web platform for managing urban green spaces: planting areas, trash cans and other infrastructure are tracked on an interactive Leaflet map. Authenticated users can add, edit and delete locations.",
+    features: [
+      "Interactive map with categorized markers for locations.",
+      "Add, edit, and delete location points in real time.",
+      "User authentication for protected routes and features.",
+      "Responsive, accessible design for mobile and desktop.",
+      "Geolocation support for finding and marking user positions.",
+    ],
+  },
 ];
+
+export const featuredProjects = projects.filter((p) => p.featured);
+export const archiveProjects = projects.filter((p) => !p.featured);
+
+export const getProject = (slug: string | undefined) =>
+  projects.find((p) => p.slug === slug);
+
+export const projectPath = (slug: string) => `/projects/${slug}`;
